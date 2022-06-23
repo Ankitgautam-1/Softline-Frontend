@@ -1,24 +1,39 @@
+import { MultiSelectUnstyled } from '@mui/base';
+import {
+	Box,
+	Chip,
+	InputLabel,
+	MenuItem,
+	OutlinedInput,
+	Select,
+	SelectChangeEvent,
+} from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import ReactSelect, { MultiValue } from 'react-select';
 import './App.scss';
-import { Companies, Department } from './interfaces/Companies';
+import { Department } from './interfaces/Companies';
 import { ServiceItem } from './interfaces/ServiceItem';
-import { ServiceCategory, ServicePackage } from './interfaces/ServicePackage';
+import { ServiceCategory } from './interfaces/ServicePackage';
 import axiosConfig from './Utils/axiosConfig.js';
+
 function App() {
+	const [optionSelected, setOptionSelected] = useState<any>(null);
 	const [selectedID, setSelectedID] = useState<Number>(0);
-	const [selectedServiceItem, setSelectedServiceItem] =
-		useState<ServiceItem>();
+	const [items, setItems] = useState<any>([]);
+	const [multiSelectOptions, setMultiSelectOptions] = useState<any>([]);
 	const [listOfCompanies, setListOfCompanies] = useState<[] | Department[]>(
 		[]
 	);
+
 	const [listOfServicePackage, setListOfServicePackage] = useState<
 		[] | ServiceCategory[]
 	>([]);
 	const [listOfServiceItem, setlistOfServiceItem] = useState<
 		[] | ServiceItem[]
 	>([]);
-
+	const [serviceItem, setserviceItem] = useState<string[]>([]);
+	const [number, setNumber] = useState(0);
 	useEffect(() => {
 		const getCompanies = async () => {
 			return axiosConfig.get('/api/v1/getCompanies');
@@ -57,7 +72,7 @@ function App() {
 	// const getServiceItemByID = async (id: Number) => {
 	// 	const selectedDisplayID = listOfServiceItem.filter(
 	// 		(service_item: ServiceItem) => {
-	// 			console.log(
+	//
 	// 				'selectedID:',
 	// 				id,
 	// 				'service_item.id',
@@ -69,21 +84,67 @@ function App() {
 	// 			}
 	// 		}
 	// 	);
-	// 	console.log('display id', selectedDisplayID[0].display_id);
+	//
 
 	// 	const response = await axiosConfig.get(
 	// 		`/api/v1/getServiceItemByID/${selectedDisplayID[0].display_id}`
 	// 	);
 	// 	if (response.data['ok']) {
-	// 		console.log(response.data['servicePackage']['service_item']);
+	//
 	// 		setSelectedServiceItem(
 	// 			response.data['servicePackage']['service_item']
 	// 		);
 	// 	}
 	// };
+	const colourOptions = [
+		{ value: 'ocean1', label: 'Ocean' },
+		{ value: 'blue', label: 'Blue' },
+		{ value: 'purple', label: 'Purple' },
+		{ value: 'red', label: 'Red' },
+		{ value: 'orange', label: 'Orange' },
+		{ value: 'yellow', label: 'Yellow' },
+		{ value: 'green', label: 'Green' },
+		{ value: 'forest', label: 'Forest' },
+		{ value: 'slate', label: 'Slate' },
+		{ value: 'silver', label: 'Silver' },
+	];
+	const ITEM_HEIGHT = 48;
+	const ITEM_PADDING_TOP = 8;
+	const MenuProps = {
+		PaperProps: {
+			style: {
+				maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+				width: 250,
+			},
+		},
+	};
 
+	const handleChange = (event: SelectChangeEvent<typeof serviceItem>) => {
+		const {
+			target: { value },
+		} = event;
+		setserviceItem(
+			// On autofill we get a stringified value.
+			typeof value === 'string' ? value.split(',') : value
+		);
+	};
+	// const Option = (props:any) => {
+	//   return (
+	//     <div>
+	//       <components.Option {...props}>
+	//         <input
+	//           type="checkbox"
+	//           checked={props.isSelected}
+	//           onChange={() => null}
+	//         />{" "}
+	//         <label>{props.label}</label>
+	//       </components.Option>
+	//     </div>
+	//   );
+	// };
 	return (
 		<div>
+			<h2>{JSON.stringify(selectedID)}</h2>
 			<h2>List of companies</h2>
 			<form>
 				<select name="" id="">
@@ -107,7 +168,23 @@ function App() {
 					id="List of Service Package"
 					onChange={async (e) => {
 						const id = parseInt(e.target.value);
-						console.log(e.target);
+						setMultiSelectOptions(
+							listOfServiceItem
+								.map((serviceItem) => {
+									if (
+										serviceItem.category_id === 19000244408
+									) {
+										return {
+											label: serviceItem.name,
+											value: serviceItem.name,
+										};
+									}
+								})
+								.filter(function (el) {
+									return el != null;
+								})
+						);
+						setserviceItem([]);
 						setSelectedID(id);
 					}}
 				>
@@ -152,6 +229,78 @@ function App() {
 						}
 					})}
 				</select>
+				<InputLabel id="demo-multiple-chip-label">
+					Please select Service Item
+				</InputLabel>
+				<Select
+					labelId="demo-multiple-chip-label"
+					id="demo-multiple-chip"
+					multiple
+					placeholder="Select Service item"
+					value={serviceItem}
+					style={{
+						minWidth: 200,
+					}}
+					onChange={handleChange}
+					input={
+						<OutlinedInput
+							id="select-multiple-chip"
+							label="Chip"
+							placeholder="Chip"
+						/>
+					}
+					renderValue={(selected) => (
+						<div>
+							{selected.map((value) => (
+								<Chip
+									key={value}
+									label={value}
+									onClick={() => {
+										console.log('HI');
+									}}
+								/>
+							))}
+						</div>
+					)}
+					MenuProps={MenuProps}
+				>
+					{listOfServiceItem.map((serviceItem: ServiceItem) => {
+						if (serviceItem.category_id === selectedID) {
+							return (
+								<MenuItem
+									key={serviceItem.id}
+									value={serviceItem.name}
+								>
+									{serviceItem.name}
+								</MenuItem>
+							);
+						}
+					})}
+				</Select>
+
+				<ReactSelect
+					isMulti
+					className="multi_select"
+					options={listOfServiceItem
+						.map((serviceItem) => {
+							if (serviceItem.category_id === selectedID) {
+								return {
+									label: serviceItem.name,
+									value: serviceItem.name,
+								};
+							}
+						})
+						.filter(function (el) {
+							return el != null;
+						})}
+					closeMenuOnSelect={false}
+					hideSelectedOptions={false}
+					onChange={(selected) => {
+						console.log('selected', selected);
+						setOptionSelected(selected);
+					}}
+					value={optionSelected}
+				/>
 			</form>
 		</div>
 	);
