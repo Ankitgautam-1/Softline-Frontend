@@ -12,6 +12,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ReactSelect, { MultiValue } from 'react-select';
 import './App.scss';
+import { Agent } from './interfaces/Agents';
 import { Department } from './interfaces/Companies';
 import { ServiceItem } from './interfaces/ServiceItem';
 import { ServiceCategory } from './interfaces/ServicePackage';
@@ -32,6 +33,7 @@ function App() {
 	const [listOfServiceItem, setlistOfServiceItem] = useState<
 		[] | ServiceItem[]
 	>([]);
+	const [listOfAgents, setListOfAgents] = useState<[] | Agent[]>([]);
 	const [serviceItem, setserviceItem] = useState<string[]>([]);
 	const [number, setNumber] = useState(0);
 	useEffect(() => {
@@ -44,10 +46,18 @@ function App() {
 		const getServiceItem = async () => {
 			return axiosConfig.get('/api/v1/getServiceItem');
 		};
+		const getAgents = async () => {
+			return axiosConfig.get('/api/v1/getAgents');
+		};
 
 		const getData = async () => {
 			axios
-				.all([getCompanies(), getServicePackage(), getServiceItem()])
+				.all([
+					getCompanies(),
+					getServicePackage(),
+					getServiceItem(),
+					getAgents(),
+				])
 				.then((res) => {
 					if (res[0].data['ok']) {
 						setListOfCompanies(
@@ -63,6 +73,9 @@ function App() {
 						setlistOfServiceItem(
 							res[2].data['servicePackage']['service_items']
 						);
+					}
+					if (res[3].data['ok']) {
+						setListOfAgents(res[3].data['data']['agents']);
 					}
 				});
 		};
@@ -302,6 +315,27 @@ function App() {
 					}}
 					value={optionSelected}
 				/>
+				<select
+					name="Select Agents"
+					id="Agents"
+					onChange={(e) => {
+						console.log(e.target.value);
+					}}
+				>
+					{listOfAgents.map((agent: Agent) => {
+						return (
+							<option
+								key={agent.id}
+								value={agent.first_name + ' ' + agent.last_name}
+								aria-label={
+									agent.first_name + ' ' + agent.last_name
+								}
+							>
+								{agent.first_name + ' ' + agent.last_name}
+							</option>
+						);
+					})}
+				</select>
 			</form>
 		</div>
 	);
