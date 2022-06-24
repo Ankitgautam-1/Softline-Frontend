@@ -167,6 +167,7 @@ function App() {
 					name="List of Service Package"
 					id="List of Service Package"
 					onChange={async (e) => {
+						setOptionSelected([]);
 						const id = parseInt(e.target.value);
 						setMultiSelectOptions(
 							listOfServiceItem
