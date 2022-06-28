@@ -18,8 +18,18 @@ import { ServiceCategory } from '../../interfaces/ServicePackage';
 import axiosConfig from '../../Utils/axiosConfig.js';
 import 'antd/dist/antd.css';
 import moment from 'moment';
+import Logo from '../../assets/images/softline-logo.png';
+import BgImg from '../../assets/images/bg.jpg';
 const { RangePicker } = DatePicker;
+import './home.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import userReducer, {
+	unAuth,
+	userState,
+} from '../../store/userAuth/userAuthSlice';
+import { Navigate } from 'react-router-dom';
 function Home() {
+	const dispatch: any = useDispatch();
 	const [optionSelected, setOptionSelected] = useState<any>(null);
 	const [selectedID, setSelectedID] = useState<Number>(0);
 	const [items, setItems] = useState<any>([]);
@@ -37,18 +47,38 @@ function Home() {
 	const [listOfAgents, setListOfAgents] = useState<[] | Agent[]>([]);
 	const [serviceItem, setserviceItem] = useState<string[]>([]);
 	const [number, setNumber] = useState(0);
+	const authReducer = useSelector((state: { userReducer: userState }) => {
+		return state.userReducer;
+	});
+	useEffect(() => {});
 	useEffect(() => {
 		const getCompanies = async () => {
-			return axiosConfig.get('/api/v1/getCompanies');
+			return axiosConfig.get('/api/v1/getCompanies', {
+				headers: {
+					authorization: authReducer.accessToken.toString(),
+				},
+			});
 		};
 		const getServicePackage = async () => {
-			return axiosConfig.get('/api/v1/getServicePackage');
+			return axiosConfig.get('/api/v1/getServicePackage', {
+				headers: {
+					authorization: authReducer.accessToken.toString(),
+				},
+			});
 		};
 		const getServiceItem = async () => {
-			return axiosConfig.get('/api/v1/getServiceItem');
+			return axiosConfig.get('/api/v1/getServiceItem', {
+				headers: {
+					authorization: authReducer.accessToken.toString(),
+				},
+			});
 		};
 		const getAgents = async () => {
-			return axiosConfig.get('/api/v1/getAgents');
+			return axiosConfig.get('/api/v1/getAgents', {
+				headers: {
+					authorization: authReducer.accessToken.toString(),
+				},
+			});
 		};
 
 		const getData = async () => {
@@ -78,11 +108,22 @@ function Home() {
 					if (res[3].data['ok']) {
 						setListOfAgents(res[3].data['data']['agents']);
 					}
+				})
+				.catch((res) => {
+					if (res.response.status === 403) {
+						dispatch(unAuth());
+
+						window.location.reload();
+					}
 				});
 		};
-		getData();
+		if (authReducer.auth) {
+			getData();
+		}
 	}, []);
-
+	// if (!authReducer.auth) {
+	// 	return <Navigate to="/" replace />;
+	// }
 	// const getServiceItemByID = async (id: Number) => {
 	// 	const selectedDisplayID = listOfServiceItem.filter(
 	// 		(service_item: ServiceItem) => {
@@ -157,7 +198,15 @@ function Home() {
 	//   );
 	// };
 	return (
-		<div>
+		<div className="homepage_container">
+			<nav className="nav">
+				<img src={Logo} className="logo" alt="softline-logo" />
+				<img
+					src={BgImg}
+					className="background_image"
+					alt="background Image"
+				/>
+			</nav>
 			<h2>{JSON.stringify(selectedID)}</h2>
 			<h2>List of companies</h2>
 			<form>
@@ -221,10 +270,6 @@ function Home() {
 					)}
 				</select>
 				<br />
-				{/* <h2>List of Service Item</h2>
-				{JSON.stringify(listOfServiceItem)}
-				<h1>ID</h1>
-				{JSON.stringify(selectedID)} */}
 
 				<h1>Service Item by ID</h1>
 				<select name="" id="">

@@ -1,0 +1,14 @@
+.homepage_container {
+	.nav {
+		display: flex;
+		flex-direction: column;
+		.logo {
+			width: 100px;
+			margin: 10px 20px;
+		}
+		.background_image {
+			height: 200px;
+			object-fit: cover;
+		}
+	}
+}
