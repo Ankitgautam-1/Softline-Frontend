@@ -1,0 +1,40 @@
+.contanier {
+	.table_container {
+		.MuiDataGrid-columnHeaders {
+			background-color: gray;
+			color: white;
+
+			z-index: 5;
+		}
+	}
+	.createButton {
+		&:hover {
+			background-color: rgb(76, 133, 237);
+		}
+		font-family: 'Montserrat', sans-serif;
+		background-color: cornflowerblue;
+		border-radius: 5px;
+		margin: 10px;
+		text-transform: capitalize;
+		color: white;
+	}
+}
+
+.ant-modal-content {
+	border-radius: 10px;
+
+	.createButton {
+		span {
+			font-family: 'Montserrat', sans-serif;
+		}
+		height: 45px;
+		&:hover {
+			background-color: rgb(24, 82, 189);
+		}
+		background-color: rgb(58, 85, 238);
+		border-radius: 5px;
+		padding: 0 20px;
+		text-transform: capitalize;
+		color: white;
+	}
+}

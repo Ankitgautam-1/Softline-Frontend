@@ -1,8 +1,7 @@
 import { Typography, useMediaQuery } from '@mui/material';
 import React, { useState } from 'react';
 import './Login.scss';
-import { Field, Form, Formik } from 'formik';
-import Logo from '../../assets/images/softline-logo.png';
+
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Input, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,12 +33,11 @@ const LoginPage = () => {
 		<div className="login_page_contanier">
 			<div className="left_side">
 				<div className="header_title">
-					<img src={Logo} alt="softline-logo" className="logo" />
+					{/* <img src={Logo} alt="softline-logo" className="logo" /> */}
 					<h1>Login</h1>
 				</div>
-
 				<form
-					className="form"
+					className="loginForm"
 					onSubmit={(e) => {
 						e.preventDefault();
 						console.log('email', email, 'password', password);

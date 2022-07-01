@@ -6,6 +6,7 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from './App';
 import './index.scss';
 import Home from './pages/home/home';
+import LoginPage from './pages/login/login';
 import NotFound from './pages/NotFound/NotFound';
 import store, { persistor } from './store/store';
 
@@ -15,7 +16,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 			<PersistGate persistor={persistor}>
 				<BrowserRouter>
 					<Routes>
-						<Route path="/" element={<App />} />
+						<Route path="/" element={<LoginPage />} />
 						<Route path="/homepage" element={<Home />} />
 						<Route path="*" element={<NotFound />} />
 					</Routes>

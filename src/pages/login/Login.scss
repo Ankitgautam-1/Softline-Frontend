@@ -1,6 +1,5 @@
 .login_page_contanier {
 	display: flex;
-
 	.left_side {
 		height: 100vh;
 		margin: 0 20px;
@@ -8,7 +7,6 @@
 		flex-direction: column;
 		align-self: center;
 		justify-content: center;
-
 		flex: 1;
 		.header_title {
 			min-width: 300px;
@@ -21,7 +19,7 @@
 			}
 			margin-bottom: 40px;
 		}
-		.form {
+		.loginForm {
 			align-self: center;
 			display: flex;
 			max-width: 350px;

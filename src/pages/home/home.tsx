@@ -28,6 +28,7 @@ import userReducer, {
 	userState,
 } from '../../store/userAuth/userAuthSlice';
 import { Navigate } from 'react-router-dom';
+import Table from '../../components/table/Table';
 function Home() {
 	const dispatch: any = useDispatch();
 	const [optionSelected, setOptionSelected] = useState<any>(null);
@@ -121,9 +122,9 @@ function Home() {
 			getData();
 		}
 	}, []);
-	// if (!authReducer.auth) {
-	// 	return <Navigate to="/" replace />;
-	// }
+	if (!authReducer.auth) {
+		return <Navigate to="/" replace />;
+	}
 	// const getServiceItemByID = async (id: Number) => {
 	// 	const selectedDisplayID = listOfServiceItem.filter(
 	// 		(service_item: ServiceItem) => {
@@ -199,15 +200,15 @@ function Home() {
 	// };
 	return (
 		<div className="homepage_container">
-			<nav className="nav">
+			{/* <nav className="nav">
 				<img src={Logo} className="logo" alt="softline-logo" />
 				<img
 					src={BgImg}
 					className="background_image"
 					alt="background Image"
 				/>
-			</nav>
-			<h2>{JSON.stringify(selectedID)}</h2>
+			</nav> */}
+			{/* <h2>{JSON.stringify(selectedID)}</h2>
 			<h2>List of companies</h2>
 			<form>
 				<select name="" id="">
@@ -393,7 +394,8 @@ function Home() {
 						);
 					}}
 				/>
-			</Space>
+			</Space> */}
+			<Table />
 		</div>
 	);
 }

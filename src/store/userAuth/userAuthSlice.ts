@@ -5,7 +5,7 @@ export type userState = {
 	loading: boolean;
 	auth: boolean;
 	userEmail: String;
-	userID: String;
+	userId: String;
 	accessToken: String;
 	faild: boolean;
 };
@@ -13,7 +13,7 @@ const userInitialState: userState = {
 	loading: false,
 	auth: false,
 	userEmail: '',
-	userID: '',
+	userId: '',
 	faild: false,
 	accessToken: '',
 };
@@ -64,7 +64,7 @@ const userAuthSlice = createSlice({
 					loading: false,
 					accessToken: action.payload.accessToken,
 					userEmail: action.payload.userEmail,
-					userId: action.payload.userID,
+					userId: action.payload.userId,
 				};
 			} else {
 				console.log('else');
