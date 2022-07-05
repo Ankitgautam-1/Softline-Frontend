@@ -11,17 +11,15 @@ import NotFound from './pages/NotFound/NotFound';
 import store, { persistor } from './store/store';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-	<React.StrictMode>
-		<Provider store={store}>
-			<PersistGate persistor={persistor}>
-				<BrowserRouter>
-					<Routes>
-						<Route path="/" element={<LoginPage />} />
-						<Route path="/homepage" element={<Home />} />
-						<Route path="*" element={<NotFound />} />
-					</Routes>
-				</BrowserRouter>
-			</PersistGate>
-		</Provider>
-	</React.StrictMode>
+	<Provider store={store}>
+		<PersistGate persistor={persistor}>
+			<BrowserRouter>
+				<Routes>
+					<Route path="/" element={<LoginPage />} />
+					<Route path="/homepage" element={<Home />} />
+					<Route path="*" element={<NotFound />} />
+				</Routes>
+			</BrowserRouter>
+		</PersistGate>
+	</Provider>
 );

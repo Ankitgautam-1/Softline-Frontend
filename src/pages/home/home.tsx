@@ -38,7 +38,6 @@ function Home() {
 	const authReducer = useSelector((state: { userReducer: userState }) => {
 		return state.userReducer;
 	});
-	useEffect(() => {});
 	useEffect(() => {
 		const getCompanies = async () => {
 			return axiosConfig.get('/api/v1/getCompanies', {

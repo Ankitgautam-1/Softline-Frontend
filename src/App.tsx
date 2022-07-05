@@ -4,7 +4,7 @@ import { Dispatch } from 'react';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import './App.scss';
 import LoginPage from './pages/login/login';
-import { getCartItems } from './store/store';
+
 import {
 	closeFaild,
 	userSignIn,
@@ -23,39 +23,6 @@ function App() {
 	});
 	return (
 		<div>
-			{/* <button
-				onClick={() => {
-					dispatch(getCartItems());
-				}}
-			>
-				get Todos
-			</button>
-
-			{store.loading && <div>Loading...</div>}
-			{JSON.stringify(store)}
-			<br />
-			<button
-				onClick={() => {
-					dispatch(
-						userSignIn({
-							email: 'test@test.co',
-							password: 'test123',
-						})
-					);
-				}}
-			>
-				SignIn
-			</button>
-			{JSON.stringify(authReducer)}
-			<Snackbar
-				open={authReducer.faild}
-				autoHideDuration={6000}
-				onClose={() => {
-					dispatch(closeFaild(authReducer));
-				}}
-				message="Note archived"
-				action={'Faild auth'}
-			/> */}
 			<LoginPage />
 		</div>
 	);

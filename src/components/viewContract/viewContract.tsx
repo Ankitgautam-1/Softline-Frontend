@@ -62,6 +62,7 @@ const ViewContract: React.FC<Props> = ({
 						</Typography>
 						<RangePicker
 							className="datePicker"
+							disabled
 							defaultValue={[
 								moment(contract?.startDate, dateFormat),
 								moment(contract?.endDate, dateFormat),
