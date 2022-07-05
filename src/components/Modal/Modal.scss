@@ -1,161 +1,186 @@
 .modal_container {
 	min-width: fit-content;
-
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	.contract_container {
 		border-radius: 20px;
 		padding: 0px 20px;
-		display: flex;
-		flex-direction: column;
 
-		.heading {
-			font-family: 'Montserrat', sans-serif;
-		}
-		.form_container {
+		.formClass {
 			display: flex;
-			gap: 30px;
-			&:last-child {
-				margin-left: 10px;
+			flex-direction: column;
+			align-items: flex-end;
+			.createContractBtn {
+				background-color: rgb(55, 82, 214);
+				padding: 0px 20px;
+				height: 45px;
+				color: white;
+				border-radius: 10px;
+
+				width: fit-content;
+				border: none;
+				span {
+					font-family: 'Montserrat', sans-serif;
+					font-weight: 500;
+				}
+				&:hover {
+					background-color: rgb(35, 60, 187);
+				}
 			}
-			padding: 0px 20px;
-			.left_side {
+			.heading {
 				font-family: 'Montserrat', sans-serif;
+			}
+			.form_container {
+				display: flex;
+				gap: 30px;
+				&:last-child {
+					margin-left: 10px;
+				}
+				.MuiAlert-icon {
+					color: white;
+				}
+				padding: 0px 20px;
+				.left_side {
+					font-family: 'Montserrat', sans-serif;
 
-				flex: 1;
-				.label {
-					font-family: 'Montserrat', sans-serif;
-					font-size: 17px;
-					font-weight: 500;
-					color: rgb(186, 178, 178);
-					margin: 8px 0px;
-				}
-				.selectInput {
-					width: 100%;
-					max-width: 400px;
-					padding: 10px 15px;
-					border-radius: 8px;
-					background-color: #f6fafd;
-					font-family: 'Montserrat', sans-serif;
-					font-weight: 500;
-					border: 1px rgb(200, 200, 200) solid;
-					&:focus {
-						outline: none;
+					flex: 1;
+					.label {
+						font-family: 'Montserrat', sans-serif;
+						font-size: 16px;
+						font-weight: 500;
+						color: rgb(186, 178, 178);
+						margin: 8px 0px;
 					}
-				}
-				.textInput {
-					max-width: 400px;
-					min-width: 350px;
-					width: 100%;
-					border-radius: 8px;
-					outline: none;
-					padding: 10px 15px;
-					background-color: #f6fafd;
-					font-family: 'Montserrat', sans-serif;
-					font-weight: 500;
-					&:focus,
-					&:hover {
-						outline: none;
-						border: 1px solid #d8d9da;
-						box-shadow: none;
-					}
-				}
-				.multiSelect {
-					min-width: 350px;
-					width: 100%;
-					font-weight: 500;
-
-					max-width: 400px;
-					.css-1s2u09g-control {
-						border: 1px solid #d8d9da;
-						background-color: #f6fafd;
-						height: 42px;
+					.selectInput {
+						width: 100%;
+						max-width: 400px;
+						padding: 10px 15px;
 						border-radius: 8px;
-					}
-					.css-1pahdxg-control {
 						background-color: #f6fafd;
-						outline: none;
-						border: none;
+						font-family: 'Montserrat', sans-serif;
+						font-weight: 500;
+						border: 1px rgb(200, 200, 200) solid;
+						&:focus {
+							outline: none;
+						}
+					}
+					.textInput {
+						max-width: 400px;
+						min-width: 350px;
+						width: 100%;
 						border-radius: 8px;
-						height: 42px;
-						border: 1px solid #d8d9da;
+						outline: none;
+						padding: 10px 15px;
+						background-color: #f6fafd;
+						font-family: 'Montserrat', sans-serif;
+						font-weight: 500;
 						&:focus,
-						&:focus-within,
 						&:hover {
+							outline: none;
 							border: 1px solid #d8d9da;
 							box-shadow: none;
 						}
 					}
-					.css-2613qy-menu {
-						font-family: 'Montserrat', sans-serif !important;
-					}
-					#react-select-3-placeholder {
-						font-family: 'Montserrat', sans-serif !important;
-					}
-				}
-				.contractPeriod {
-					display: inline;
-					margin-left: 10px;
-					color: gray;
-					font-size: small;
-					font-weight: 600;
-					margin-bottom: 5px;
-					font-family: 'Montserrat', sans-serif;
-				}
-				.datePicker {
-					width: 100%;
-					max-width: 400px;
-					border-radius: 5px;
-					&:hover {
-						border: 1px solid rgb(226, 226, 226);
-					}
-					&::selection {
-						border: none;
-						outline: none;
-					}
-					height: 45px;
-					padding: 6px 25px;
-					background-color: #f6fafd;
-					font-family: 'Montserrat', sans-serif;
-				}
-			}
-			.right_side {
-				flex: 1;
+					.multiSelect {
+						min-width: 350px;
+						width: 100%;
+						font-weight: 500;
+						height: 42px;
+						max-width: 400px;
+						.css-1s2u09g-control {
+							border: 1px solid #d8d9da;
+							background-color: #f6fafd;
 
-				.label {
-					font-family: 'Montserrat', sans-serif;
-					font-size: 17px;
-					font-weight: 500;
-					color: rgb(186, 178, 178);
-					margin: 8px 0px;
-				}
-				.textInput {
-					max-width: 400px;
-					min-width: 350px;
-					width: 100%;
-					border-radius: 8px;
-					outline: none;
-					padding: 10px 15px;
-					background-color: #f6fafd;
-					font-family: 'Montserrat', sans-serif;
-					font-weight: 500;
+							border-radius: 8px;
+						}
+						.css-1pahdxg-control {
+							background-color: #f6fafd;
+							outline: none;
+							border: none;
+							border-radius: 8px;
 
-					&:focus,
-					&:hover {
-						outline: none;
-						border: 1px solid #d8d9da;
-						box-shadow: none;
+							border: 1px solid #d8d9da;
+							&:focus,
+							&:focus-within,
+							&:hover {
+								border: 1px solid #d8d9da;
+								box-shadow: none;
+							}
+						}
+						.css-2613qy-menu {
+							font-family: 'Montserrat', sans-serif !important;
+						}
+						#react-select-3-placeholder {
+							font-family: 'Montserrat', sans-serif !important;
+						}
+					}
+					.contractPeriod {
+						display: inline;
+						margin-left: 10px;
+						color: gray;
+						font-size: small;
+						font-weight: 600;
+						margin-bottom: 5px;
+						font-family: 'Montserrat', sans-serif;
+					}
+					.datePicker {
+						width: 100%;
+						max-width: 400px;
+						border-radius: 5px;
+						&:hover {
+							border: 1px solid rgb(226, 226, 226);
+						}
+						&::selection {
+							border: none;
+							outline: none;
+						}
+						height: 45px;
+						padding: 6px 25px;
+						background-color: #f6fafd;
+						font-family: 'Montserrat', sans-serif;
 					}
 				}
-				.selectInput {
-					width: 100%;
-					max-width: 400px;
-					padding: 10px 15px;
-					border-radius: 8px;
-					background-color: #f6fafd;
-					font-family: 'Montserrat', sans-serif;
-					font-weight: 500;
-					border: 1px rgb(200, 200, 200) solid;
-					&:focus {
+				.right_side {
+					flex: 1;
+
+					.label {
+						font-family: 'Montserrat', sans-serif;
+						font-size: 16px;
+						font-weight: 500;
+						color: rgb(186, 178, 178);
+						margin: 8px 0px;
+					}
+					.textInput {
+						max-width: 400px;
+						min-width: 350px;
+						width: 100%;
+						border-radius: 8px;
 						outline: none;
+						padding: 10px 15px;
+						background-color: #f6fafd;
+						font-family: 'Montserrat', sans-serif;
+						font-weight: 500;
+
+						&:focus,
+						&:hover {
+							outline: none;
+							border: 1px solid #d8d9da;
+							box-shadow: none;
+						}
+					}
+					.selectInput {
+						width: 100%;
+						max-width: 400px;
+						padding: 10px 15px;
+						border-radius: 8px;
+						background-color: #f6fafd;
+						font-family: 'Montserrat', sans-serif;
+						font-weight: 500;
+						border: 1px rgb(200, 200, 200) solid;
+						&:focus {
+							outline: none;
+						}
 					}
 				}
 			}

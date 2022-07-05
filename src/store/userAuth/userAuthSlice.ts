@@ -53,21 +53,16 @@ const userAuthSlice = createSlice({
 			};
 		});
 		builder.addCase(userSignIn.fulfilled, (state, action) => {
-			console.log('userSignIn.fulfilled', action.payload);
-
 			if (action.payload.ok) {
-				console.log('if');
-
 				return {
 					...state,
 					auth: true,
 					loading: false,
 					accessToken: action.payload.accessToken,
 					userEmail: action.payload.userEmail,
-					userId: action.payload.userId,
+					userId: action.payload.userID,
 				};
 			} else {
-				console.log('else');
 				return {
 					...state,
 					faild: true,

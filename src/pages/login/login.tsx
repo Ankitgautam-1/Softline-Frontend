@@ -25,7 +25,7 @@ const LoginPage = () => {
 	const authReducer = useSelector((state: { userReducer: userState }) => {
 		return state.userReducer;
 	});
-	console.log('userAuth', store);
+
 	if (authReducer.auth) {
 		return <Navigate to={'/homepage'} replace={true} />;
 	}
@@ -40,7 +40,6 @@ const LoginPage = () => {
 					className="loginForm"
 					onSubmit={(e) => {
 						e.preventDefault();
-						console.log('email', email, 'password', password);
 
 						if (
 							email.trim().toLowerCase() &&

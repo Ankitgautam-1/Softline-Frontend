@@ -317,7 +317,7 @@ function Home() {
 									key={value}
 									label={value}
 									onClick={() => {
-										console.log('HI');
+										 
 									}}
 								/>
 							))}
@@ -357,7 +357,7 @@ function Home() {
 					closeMenuOnSelect={false}
 					hideSelectedOptions={false}
 					onChange={(selected) => {
-						console.log('selected', selected);
+						 
 						setOptionSelected(selected);
 					}}
 					value={optionSelected}
@@ -366,7 +366,7 @@ function Home() {
 					name="Select Agents"
 					id="Agents"
 					onChange={(e) => {
-						console.log(e.target.value);
+						 
 					}}
 				>
 					{listOfAgents.map((agent: Agent) => {
