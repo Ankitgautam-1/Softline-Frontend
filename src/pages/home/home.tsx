@@ -1,26 +1,13 @@
-import { DatePicker, Space } from 'antd';
-import {
-	Box,
-	Chip,
-	InputLabel,
-	MenuItem,
-	OutlinedInput,
-	Select,
-	SelectChangeEvent,
-} from '@mui/material';
+import { SelectChangeEvent } from '@mui/material';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import ReactSelect, { MultiValue } from 'react-select';
 import { Agent } from '../../interfaces/Agents';
 import { Department } from '../../interfaces/Companies';
 import { ServiceItem } from '../../interfaces/ServiceItem';
 import { ServiceCategory } from '../../interfaces/ServicePackage';
 import axiosConfig from '../../Utils/axiosConfig.js';
 import 'antd/dist/antd.css';
-import moment from 'moment';
-import Logo from '../../assets/images/softline-logo.png';
-import BgImg from '../../assets/images/bg.jpg';
-const { RangePicker } = DatePicker;
+
 import './home.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import userReducer, {
@@ -125,33 +112,7 @@ function Home() {
 	if (!authReducer.auth) {
 		return <Navigate to="/" replace />;
 	}
-	// const getServiceItemByID = async (id: Number) => {
-	// 	const selectedDisplayID = listOfServiceItem.filter(
-	// 		(service_item: ServiceItem) => {
-	//
-	// 				'selectedID:',
-	// 				id,
-	// 				'service_item.id',
-	// 				service_item.id
-	// 			);
 
-	// 			if (id.toString() === service_item.category_id.toString()) {
-	// 				return service_item.display_id;
-	// 			}
-	// 		}
-	// 	);
-	//
-
-	// 	const response = await axiosConfig.get(
-	// 		`/api/v1/getServiceItemByID/${selectedDisplayID[0].display_id}`
-	// 	);
-	// 	if (response.data['ok']) {
-	//
-	// 		setSelectedServiceItem(
-	// 			response.data['servicePackage']['service_item']
-	// 		);
-	// 	}
-	// };
 	const colourOptions = [
 		{ value: 'ocean1', label: 'Ocean' },
 		{ value: 'blue', label: 'Blue' },
@@ -175,226 +136,8 @@ function Home() {
 		},
 	};
 
-	const handleChange = (event: SelectChangeEvent<typeof serviceItem>) => {
-		const {
-			target: { value },
-		} = event;
-		setserviceItem(
-			// On autofill we get a stringified value.
-			typeof value === 'string' ? value.split(',') : value
-		);
-	};
-	// const Option = (props:any) => {
-	//   return (
-	//     <div>
-	//       <components.Option {...props}>
-	//         <input
-	//           type="checkbox"
-	//           checked={props.isSelected}
-	//           onChange={() => null}
-	//         />{" "}
-	//         <label>{props.label}</label>
-	//       </components.Option>
-	//     </div>
-	//   );
-	// };
 	return (
 		<div className="homepage_container">
-			{/* <nav className="nav">
-				<img src={Logo} className="logo" alt="softline-logo" />
-				<img
-					src={BgImg}
-					className="background_image"
-					alt="background Image"
-				/>
-			</nav> */}
-			{/* <h2>{JSON.stringify(selectedID)}</h2>
-			<h2>List of companies</h2>
-			<form>
-				<select name="" id="">
-					<option defaultValue={'default'}>Select Companies</option>
-					{listOfCompanies.map((department: Department) => {
-						return (
-							<option
-								key={department.id}
-								value={department.name}
-								aria-label={department.name}
-							>
-								{department.name}
-							</option>
-						);
-					})}
-				</select>
-				<br />
-				<h2>List of Service Package</h2>
-				<select
-					name="List of Service Package"
-					id="List of Service Package"
-					onChange={async (e) => {
-						setOptionSelected([]);
-						const id = parseInt(e.target.value);
-						setMultiSelectOptions(
-							listOfServiceItem
-								.map((serviceItem) => {
-									if (
-										serviceItem.category_id === 19000244408
-									) {
-										return {
-											label: serviceItem.name,
-											value: serviceItem.name,
-										};
-									}
-								})
-								.filter(function (el) {
-									return el != null;
-								})
-						);
-						setserviceItem([]);
-						setSelectedID(id);
-					}}
-				>
-					<option defaultValue={'default'}>
-						Select Service Package
-					</option>
-					{listOfServicePackage.map(
-						(ServiceCategory: ServiceCategory) => {
-							return (
-								<option
-									key={ServiceCategory.id}
-									value={ServiceCategory.id}
-									aria-label={ServiceCategory.name}
-								>
-									{ServiceCategory.name}
-								</option>
-							);
-						}
-					)}
-				</select>
-				<br />
-
-				<h1>Service Item by ID</h1>
-				<select name="" id="">
-					<option defaultValue={'default'}>
-						Please Select Service Package
-					</option>
-					{listOfServiceItem.map((serviceItem: ServiceItem) => {
-						if (serviceItem.category_id === selectedID) {
-							return (
-								<option
-									key={serviceItem.id}
-									value={serviceItem.name}
-								>
-									{serviceItem.name}
-								</option>
-							);
-						}
-					})}
-				</select>
-				<InputLabel id="demo-multiple-chip-label">
-					Please select Service Item
-				</InputLabel>
-				<Select
-					labelId="demo-multiple-chip-label"
-					id="demo-multiple-chip"
-					multiple
-					placeholder="Select Service item"
-					value={serviceItem}
-					style={{
-						minWidth: 200,
-					}}
-					onChange={handleChange}
-					input={
-						<OutlinedInput
-							id="select-multiple-chip"
-							label="Chip"
-							placeholder="Chip"
-						/>
-					}
-					renderValue={(selected) => (
-						<div>
-							{selected.map((value) => (
-								<Chip
-									key={value}
-									label={value}
-									onClick={() => {
-										 
-									}}
-								/>
-							))}
-						</div>
-					)}
-					MenuProps={MenuProps}
-				>
-					{listOfServiceItem.map((serviceItem: ServiceItem) => {
-						if (serviceItem.category_id === selectedID) {
-							return (
-								<MenuItem
-									key={serviceItem.id}
-									value={serviceItem.name}
-								>
-									{serviceItem.name}
-								</MenuItem>
-							);
-						}
-					})}
-				</Select>
-
-				<ReactSelect
-					isMulti
-					className="multi_select"
-					options={listOfServiceItem
-						.map((serviceItem) => {
-							if (serviceItem.category_id === selectedID) {
-								return {
-									label: serviceItem.name,
-									value: serviceItem.name,
-								};
-							}
-						})
-						.filter(function (el) {
-							return el != null;
-						})}
-					closeMenuOnSelect={false}
-					hideSelectedOptions={false}
-					onChange={(selected) => {
-						 
-						setOptionSelected(selected);
-					}}
-					value={optionSelected}
-				/>
-				<select
-					name="Select Agents"
-					id="Agents"
-					onChange={(e) => {
-						 
-					}}
-				>
-					{listOfAgents.map((agent: Agent) => {
-						return (
-							<option
-								key={agent.id}
-								value={agent.first_name + ' ' + agent.last_name}
-								aria-label={
-									agent.first_name + ' ' + agent.last_name
-								}
-							>
-								{agent.first_name + ' ' + agent.last_name}
-							</option>
-						);
-					})}
-				</select>
-			</form>
-			<Space direction="vertical" size={12}>
-				<RangePicker
-					disabledDate={(current) => {
-						let customDate = moment().format('YYYY-MM-DD');
-						return (
-							current &&
-							current < moment(customDate, 'YYYY-MM-DD')
-						);
-					}}
-				/>
-			</Space> */}
 			<Table />
 		</div>
 	);
