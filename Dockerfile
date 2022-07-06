@@ -1,12 +1,12 @@
 #stage build
-FROM node:16-alpine AS builder
+FROM node:latest AS builder
 WORKDIR /app
 COPY . .
 RUN npm ci
 RUN npm audit fix
 RUN npm run build
 #nginx build
-FROM nginx:alpine
+FROM nginx:latest
 # Set working directory to nginx asset directory
 WORKDIR /usr/share/nginx/html
 # Remove default nginx static assets
