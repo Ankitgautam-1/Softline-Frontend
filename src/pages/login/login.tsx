@@ -6,7 +6,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Input, Space } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSignIn, userState } from '../../store/userAuth/userAuthSlice';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Blob from '../../assets/images/blob.svg';
 interface LoginTypes {
 	email: String;
@@ -17,6 +17,7 @@ const LoginPage = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const dispatch: any = useDispatch();
+	const navigate = useNavigate();
 	const store = useSelector(
 		(state: { todos: { loading: boolean; data: any; error: String } }) => {
 			return state.todos;
@@ -38,19 +39,24 @@ const LoginPage = () => {
 				</div>
 				<form
 					className="loginForm"
-					onSubmit={(e) => {
+					onSubmit={async (e) => {
 						e.preventDefault();
 
 						if (
 							email.trim().toLowerCase() &&
 							password.trim().toLocaleLowerCase()
 						) {
-							dispatch(
+							const data = await dispatch(
 								userSignIn({
 									email: email.trim().toLowerCase(),
 									password: password.trim().toLowerCase(),
 								})
 							);
+							try {
+								if (data.payload.ok) {
+									navigate('/homepage', { replace: true });
+								}
+							} catch (error) {}
 						}
 					}}
 				>

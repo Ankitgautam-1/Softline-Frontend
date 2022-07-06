@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { useDemoData } from '@mui/x-data-grid-generator';
 import './Table.scss';
 import 'antd/dist/antd.css';
-const { RangePicker } = DatePicker;
 
-import axiosConfig from '../../Utils/axiosConfig';
+import Cookies from 'js-cookie';
 import { Contract } from '../../interfaces/Contracts';
 import { useDispatch, useSelector } from 'react-redux';
 import { unAuth, userState } from '../../store/userAuth/userAuthSlice';
 import { Box, Typography, Button, Popover } from '@mui/material';
 
-import { CloseOutlined } from '@mui/icons-material';
 import { DatePicker, Input, Space } from 'antd';
 import moment, { Moment } from 'moment';
 import { ServiceCategory } from '../../interfaces/ServicePackage';
 import { ServiceItem } from '../../interfaces/ServiceItem';
 import { Agent } from '../../interfaces/Agents';
-import axios from 'axios';
-import { Button as AntdButton } from 'antd';
+
 import { Department } from '../../interfaces/Companies';
-import ReactSelect from 'react-select';
 import ModalComponents from '../Modal/Modal';
-import { getContracts } from '../../store/contracts';
+import { getContracts, resetContract } from '../../store/contracts';
 import { AiFillEye, AiFillDelete } from 'react-icons/ai';
 import ViewContract from '../viewContract/viewContract';
 interface ViewContractProps {
@@ -108,15 +103,26 @@ export default function Table() {
 	const handlePopoverClose = () => {
 		setAnchorEl(null);
 	};
-
+	const handleLogout = () => {
+		dispatch(unAuth());
+		dispatch(resetContract());
+		Cookies.remove('accessToken', {
+			path: '/',
+			domain: 'localhost',
+		});
+	};
 	const open = Boolean(anchorEl);
 
 	return (
 		<div style={{ width: '100%' }} className="contanier">
-			<br />
-			<Button className="createButton" onClick={handleOpen}>
-				Create Contract
-			</Button>
+			<div className="buttons">
+				<Button className="createButton" onClick={handleOpen}>
+					Create Contract
+				</Button>
+				<Button className="logoutBtn" onClick={handleLogout}>
+					Logout
+				</Button>
+			</div>
 
 			<ModalComponents handelCancel={handleClose} openModal={openModel} />
 			<ViewContract
@@ -127,20 +133,17 @@ export default function Table() {
 			{contractState.length > 0 && (
 				<>
 					<DataGrid
-						className="table_container"
 						autoHeight
-						initialState={{
-							pagination: {
-								pageSize: 25,
-							},
+						onResize={(e) => {
+							console.log(e);
 						}}
 						key="table"
-						componentsProps={{
-							cell: {
-								onMouseEnter: handlePopoverOpen,
-								onMouseLeave: handlePopoverClose,
-							},
-						}}
+						// componentsProps={{
+						// 	cell: {
+						// 		onMouseEnter: handlePopoverOpen,
+						// 		onMouseLeave: handlePopoverClose,
+						// 	},
+						// }}
 						columns={[
 							{
 								field: 'actions',
@@ -219,7 +222,7 @@ export default function Table() {
 							{
 								field: 'assets',
 								headerName: 'Assets',
-								width: 100,
+								width: 150,
 							},
 
 							{
@@ -263,6 +266,10 @@ export default function Table() {
 							},
 						]}
 						rows={contractState}
+						pageSize={20}
+						rowsPerPageOptions={[5]}
+						checkboxSelection
+						disableSelectionOnClick
 					/>
 					{value && (
 						<Popover

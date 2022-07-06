@@ -98,9 +98,10 @@ function Home() {
 				})
 				.catch((res) => {
 					if (res.response.status === 403) {
-						dispatch(unAuth());
-
-						window.location.reload();
+						if (authReducer.auth) {
+							dispatch(unAuth());
+							window.location.reload();
+						}
 					}
 				});
 		};

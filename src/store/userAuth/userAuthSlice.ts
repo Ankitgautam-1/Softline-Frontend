@@ -26,15 +26,11 @@ const userSignIn = createAsyncThunk(
 				password: password,
 			})
 			.then((resp) => {
-				console.log(resp);
-
 				if (resp.status === 201) {
 					return resp.data;
 				}
 			})
 			.catch((err) => {
-				console.log(err);
-
 				return err;
 			});
 	}

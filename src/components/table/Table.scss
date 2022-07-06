@@ -1,6 +1,36 @@
 .contanier {
+	.buttons {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.createButton {
+			&:hover {
+				background-color: rgb(76, 133, 237);
+			}
+			font-family: 'Montserrat', sans-serif;
+			background-color: cornflowerblue;
+			border-radius: 5px;
+			margin: 10px;
+			text-transform: capitalize;
+			color: white;
+		}
+		.logoutBtn {
+			border: none;
+			transition: ease-in 200ms;
+			&:hover {
+				background-color: #f3dada;
+				margin-top: 3px;
+			}
+			font-family: 'Montserrat', sans-serif;
+			background-color: #f8e9e9;
+			border-radius: 5px;
+			margin: 10px;
+			text-transform: capitalize;
+			color: #e63333;
+		}
+	}
 	.table_container {
-		margin: 10px 0px;
+		margin: 10px 10px;
 
 		.MuiDataGrid-columnHeaders {
 			background-color: gray;
@@ -8,17 +38,6 @@
 
 			z-index: 5;
 		}
-	}
-	.createButton {
-		&:hover {
-			background-color: rgb(76, 133, 237);
-		}
-		font-family: 'Montserrat', sans-serif;
-		background-color: cornflowerblue;
-		border-radius: 5px;
-		margin: 10px;
-		text-transform: capitalize;
-		color: white;
 	}
 }
 

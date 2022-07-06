@@ -38,7 +38,11 @@ const initialState: Contract[] = [];
 const contractSlice = createSlice({
 	name: 'contractSlice',
 	initialState: initialState,
-	reducers: {},
+	reducers: {
+		resetContract: () => {
+			return initialState;
+		},
+	},
 	extraReducers(builder) {
 		builder.addCase(getContracts.pending, (state, action) => {
 			return { ...state };
@@ -65,4 +69,4 @@ const contractSlice = createSlice({
 const contractReducer = contractSlice.reducer;
 export default contractReducer;
 export { getContracts, createContract };
-export const {} = contractSlice.actions;
+export const { resetContract } = contractSlice.actions;
