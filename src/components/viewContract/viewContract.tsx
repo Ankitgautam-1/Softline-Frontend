@@ -63,7 +63,7 @@ const ViewContract: React.FC<Props> = ({
 						<RangePicker
 							className="datePicker"
 							disabled
-							defaultValue={[
+							value={[
 								moment(contract?.startDate, dateFormat),
 								moment(contract?.endDate, dateFormat),
 							]}
@@ -124,14 +124,14 @@ const ViewContract: React.FC<Props> = ({
 						<Input
 							className="textInput"
 							type="number"
-							defaultValue={contract?.totalEntitlement}
+							value={contract?.totalEntitlement}
 							disabled
 						/>
 						<Typography className="label">Remarks</Typography>
 						<Input
 							className="textInput"
 							type="text"
-							defaultValue={contract?.remarks}
+							value={contract?.remarks ?? ''}
 							disabled
 						/>
 					</div>
