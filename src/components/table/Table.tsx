@@ -18,8 +18,9 @@ import { Agent } from '../../interfaces/Agents';
 import { Department } from '../../interfaces/Companies';
 import ModalComponents from '../Modal/Modal';
 import { getContracts, resetContract } from '../../store/contracts';
-import { AiFillEye, AiFillDelete } from 'react-icons/ai';
+import { AiFillEye, AiFillDelete, AiOutlinePoweroff } from 'react-icons/ai';
 import ViewContract from '../viewContract/viewContract';
+import { dateDiff } from '../../Utils/helperFunction';
 interface ViewContractProps {
 	contract: Contract | null;
 	openModal: boolean;
@@ -58,7 +59,7 @@ export default function Table() {
 	>([]);
 	const [listOfAgents, setListOfAgents] = useState<[] | Agent[]>([]);
 	const [serviceItem, setserviceItem] = useState<string[]>([]);
-	const [number, setNumber] = useState(0);
+	const [pageSize, setpageSize] = useState(20);
 	//contract details
 	const [contractID, setContractID] = useState('');
 	const [contractName, setContractName] = useState('');
@@ -174,7 +175,7 @@ export default function Table() {
 													);
 												}}
 											/>
-											<AiFillDelete
+											<AiOutlinePoweroff
 												style={{
 													cursor: 'pointer',
 													borderRadius: 5,
@@ -187,6 +188,130 @@ export default function Table() {
 											/>
 										</div>
 									);
+								},
+							},
+							{
+								field: 'state',
+								headerName: 'State',
+								width: 130,
+								renderCell(params) {
+									const startDate = moment(
+										params.row.startDate
+									);
+									const endDate = moment(params.row.endDate);
+									const diff = dateDiff(startDate, endDate);
+									const dateDifference = endDate.diff(
+										new Date(),
+										'days'
+									);
+
+									const years =
+										diff.years > 0
+											? `${diff.years} year `
+											: '';
+									const months =
+										diff.months > 0
+											? `${diff.months} month `
+											: '';
+									const days =
+										dateDifference > 0
+											? `${dateDifference} days `
+											: '';
+
+									if (parseInt(days) > 20) {
+										return (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													height: '100%',
+													width: '100%',
+												}}
+											>
+												<div
+													style={{
+														backgroundColor:
+															'#06bb30',
+														minWidth: '80px',
+														color: 'white',
+														borderRadius: '6px',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent:
+															'center',
+
+														padding: '5px 9px',
+													}}
+												>
+													Activated
+												</div>
+											</div>
+										);
+									} else if (
+										parseInt(days) > 0 &&
+										parseInt(days) <= 20
+									) {
+										return (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													height: '100%',
+													width: '100%',
+												}}
+											>
+												<div
+													style={{
+														backgroundColor:
+															'#edad17',
+														minWidth: '80px',
+														color: 'white',
+														borderRadius: '6px',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent:
+															'center',
+
+														padding: '5px 9px',
+													}}
+												>
+													Expiring
+												</div>
+											</div>
+										);
+									} else {
+										return (
+											<div
+												style={{
+													display: 'flex',
+													alignItems: 'center',
+													justifyContent: 'center',
+													height: '100%',
+													width: '100%',
+												}}
+											>
+												<div
+													style={{
+														backgroundColor:
+															'#d42c2c',
+														minWidth: '80px',
+														color: 'white',
+														borderRadius: '6px',
+														display: 'flex',
+														alignItems: 'center',
+														justifyContent:
+															'center',
+
+														padding: '5px 9px',
+													}}
+												>
+													Expired
+												</div>
+											</div>
+										);
+									}
 								},
 							},
 							{
@@ -263,7 +388,10 @@ export default function Table() {
 							},
 						]}
 						rows={contractState}
-						pageSize={20}
+						pageSize={pageSize}
+						onPageSizeChange={(e) => {
+							setpageSize(e);
+						}}
 						rowsPerPageOptions={[20, 30, 40, 50]}
 						checkboxSelection
 						disableSelectionOnClick
