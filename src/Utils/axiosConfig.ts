@@ -1,7 +1,8 @@
 import axios from 'axios';
-const baseURL = 'http://localhost:3001';
+const env = import.meta.env.VITE_TEST_ENV;
+
 const axiosConfig = axios.create({
-	baseURL: baseURL,
+	baseURL: env,
 	withCredentials: true,
 });
 

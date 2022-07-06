@@ -134,9 +134,6 @@ export default function Table() {
 				<>
 					<DataGrid
 						autoHeight
-						onResize={(e) => {
-							console.log(e);
-						}}
 						key="table"
 						// componentsProps={{
 						// 	cell: {
@@ -267,7 +264,7 @@ export default function Table() {
 						]}
 						rows={contractState}
 						pageSize={20}
-						rowsPerPageOptions={[5]}
+						rowsPerPageOptions={[20, 30, 40, 50]}
 						checkboxSelection
 						disableSelectionOnClick
 					/>
