@@ -1,8 +1,8 @@
-import axios from 'axios';
-const baseURL = 'http://localhost:3001';
+import axios from "axios";
+const baseURL = "https://softline-backend.adityatawade.com";
 const axiosConfig = axios.create({
-	baseURL: baseURL,
-	withCredentials: true,
+  baseURL: baseURL,
+  withCredentials: true,
 });
 
 export default axiosConfig;
