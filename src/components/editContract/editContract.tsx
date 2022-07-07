@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
 const { RangePicker } = DatePicker;
-import './Modal.scss';
+import './editContract.scss';
 import axiosConfig from '../../Utils/axiosConfig';
 import { Contract, NewContract } from '../../interfaces/Contracts';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,15 +22,21 @@ import ReactSelect from 'react-select';
 import { asstesOptions } from '../../Utils/constData';
 import { dateDiff } from '../../Utils/helperFunction';
 import { createContract } from '../../store/contracts';
+
 type Props = {
 	handelCancel: () => void;
 	openModal: boolean;
+	contract: Contract | null;
 };
 type notifications = {
 	shownotification: boolean;
 	message: string;
 };
-const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
+const EditContract: React.FC<Props> = ({
+	handelCancel,
+	openModal,
+	contract,
+}) => {
 	const authReducer = useSelector((state: { userReducer: userState }) => {
 		return state.userReducer;
 	});
@@ -67,6 +73,24 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 		message: '',
 		shownotification: false,
 	});
+	const dateFormat = 'YYYY/MM/DD';
+	useEffect(() => {
+		if (contract) {
+			setContractID(contract.id);
+			setstartDate(contract.startDate);
+			setendDate(contract.endDate);
+			console.log(contract.startDate);
+			setSelectedAgent(contract.projectManager);
+			setHours(contract.totalEntitlement);
+			const assetsData = contract.assets.map((asset: string) => {
+				return { value: asset, label: asset };
+			});
+			setAssets(assetsData);
+			setSelectedCompany(contract.company);
+			setSelectedServicePkg(contract.servicePackage);
+			console.log('contract.servicePackage', contract.servicePackage);
+		}
+	}, []);
 	useEffect(() => {
 		const getCompanies = async () => {
 			return axiosConfig.get('/api/v1/getCompanies', {
@@ -123,11 +147,6 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 					}
 					if (res[3].data['ok']) {
 						setListOfAgents(res[3].data['data']['agents']);
-						setSelectedAgent(
-							res[3].data['data']['agents'][0]['first_name'] +
-								' ' +
-								res[3].data['data']['agents'][0]['last_name']
-						);
 					}
 				})
 				.catch((res) => {
@@ -292,28 +311,26 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 								className="textInput"
 								aria-label="contract"
 								required
+								defaultValue={contract?.id}
 								onChange={(e) => setContractID(e.target.value)}
 							/>
 
-							<Typography className="label">Company</Typography>
-
+							<Typography className="label">
+								Selected Company
+							</Typography>
 							<select
 								name="select Company"
 								className="selectInput"
+								value={selectedCompany}
 								onChange={(e) => {
 									const selectedCompany =
 										listOfCompanies[
 											e.target.options.selectedIndex - 1
 										];
-
 									setSelectedCompany(selectedCompany.name);
-
-									setselectedCompanyID(
-										parseInt(e.target.value)
-									);
 								}}
 							>
-								<option defaultValue={'default'} key="default">
+								<option defaultValue={'default'} key="key">
 									Select Companies
 								</option>
 								{listOfCompanies.map(
@@ -321,7 +338,7 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 										return (
 											<option
 												key={department.id}
-												value={department.id}
+												value={department.name}
 												aria-label={department.name}
 											>
 												{department.name}
@@ -367,6 +384,10 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 
 							<RangePicker
 								className="datePicker"
+								// defaultValue={[
+								// 	moment(moment(startDate), dateFormat),
+								// 	moment(moment(endDate), dateFormat),
+								// ]}
 								onChange={(e) => {
 									const startDate =
 										e?.[0]?.toDate().toString() ?? '';
@@ -434,8 +455,6 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 								closeMenuOnSelect={false}
 								hideSelectedOptions={false}
 								onChange={(selected) => {
-									console.log(assets);
-
 									setAssets(selected);
 								}}
 								value={assets}
@@ -579,4 +598,4 @@ const ModalComponents: React.FC<Props> = ({ handelCancel, openModal }) => {
 	);
 };
 
-export default ModalComponents;
+export default EditContract;

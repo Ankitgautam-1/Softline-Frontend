@@ -19,9 +19,16 @@ import { Department } from '../../interfaces/Companies';
 import ModalComponents from '../Modal/Modal';
 import { getContracts, resetContract } from '../../store/contracts';
 import { AiFillEye, AiFillDelete, AiOutlinePoweroff } from 'react-icons/ai';
+import { FiEdit } from 'react-icons/fi';
 import ViewContract from '../viewContract/viewContract';
 import { dateDiff } from '../../Utils/helperFunction';
+import { DeleteForever } from '@mui/icons-material';
+import EditContract from '../editContract/editContract';
 interface ViewContractProps {
+	contract: Contract | null;
+	openModal: boolean;
+}
+interface EditContractProps {
 	contract: Contract | null;
 	openModal: boolean;
 }
@@ -39,6 +46,10 @@ export default function Table() {
 	const [contracts, setContracts] = useState<[] | Contract[]>([]);
 	const [optionSelected, setOptionSelected] = useState<any>(null);
 	const [viewContract, setViewContract] = useState<ViewContractProps>({
+		openModal: false,
+		contract: null,
+	});
+	const [editContract, seteditContract] = useState<EditContractProps>({
 		openModal: false,
 		contract: null,
 	});
@@ -64,6 +75,7 @@ export default function Table() {
 	const [contractID, setContractID] = useState('');
 	const [contractName, setContractName] = useState('');
 	const [selectedAgent, setSelectedAgent] = useState('');
+	const [editContractModal, setEditContractModal] = useState(true);
 
 	useEffect(() => {
 		if (authReducer.auth) {
@@ -84,7 +96,12 @@ export default function Table() {
 	};
 	const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 	const [value, setValue] = React.useState<any>(null);
-
+	const handleOpenEditContract = (contract: Contract) => {
+		seteditContract({ contract: contract, openModal: true });
+	};
+	const handleCloseEditContract = () => {
+		seteditContract({ contract: null, openModal: false });
+	};
 	const handlePopoverOpen = (event: React.MouseEvent<HTMLElement>) => {
 		const field = event.currentTarget.dataset.field!;
 		const id = event.currentTarget.parentElement!.dataset.id!;
@@ -126,6 +143,13 @@ export default function Table() {
 			</div>
 
 			<ModalComponents handelCancel={handleClose} openModal={openModel} />
+			{editContract.openModal ? (
+				<EditContract
+					openModal={editContract.openModal}
+					contract={editContract.contract}
+					handelCancel={handleCloseEditContract}
+				/>
+			) : null}
 			<ViewContract
 				contract={viewContract.contract}
 				openModal={viewContract.openModal}
@@ -151,7 +175,7 @@ export default function Table() {
 									return (
 										<div
 											style={{
-												width: '80px',
+												width: '120px',
 												display: 'flex',
 												alignItems: 'center',
 												justifyContent: 'space-between',
@@ -175,7 +199,24 @@ export default function Table() {
 													);
 												}}
 											/>
-											<AiOutlinePoweroff
+											<FiEdit
+												style={{
+													cursor: 'pointer',
+
+													borderRadius: 5,
+													border: 'none',
+													padding: '5px',
+													backgroundColor: '#06bb30',
+													color: '#f3f3f3',
+												}}
+												size="30"
+												onClick={(e) => {
+													handleOpenEditContract(
+														params.row
+													);
+												}}
+											/>
+											<AiFillDelete
 												style={{
 													cursor: 'pointer',
 													borderRadius: 5,
@@ -205,20 +246,12 @@ export default function Table() {
 										'days'
 									);
 
-									const years =
-										diff.years > 0
-											? `${diff.years} year `
-											: '';
-									const months =
-										diff.months > 0
-											? `${diff.months} month `
-											: '';
 									const days =
 										dateDifference > 0
 											? `${dateDifference} days `
 											: '';
 
-									if (parseInt(days) > 20) {
+									if (dateDifference > 20) {
 										return (
 											<div
 												style={{
@@ -244,13 +277,13 @@ export default function Table() {
 														padding: '5px 9px',
 													}}
 												>
-													Activated
+													Active
 												</div>
 											</div>
 										);
 									} else if (
-										parseInt(days) > 0 &&
-										parseInt(days) <= 20
+										dateDifference > 0 &&
+										dateDifference <= 20
 									) {
 										return (
 											<div
@@ -265,7 +298,7 @@ export default function Table() {
 												<div
 													style={{
 														backgroundColor:
-															'#edad17',
+															'#ed940f',
 														minWidth: '80px',
 														color: 'white',
 														borderRadius: '6px',
@@ -277,7 +310,7 @@ export default function Table() {
 														padding: '5px 9px',
 													}}
 												>
-													Expiring
+													Expring
 												</div>
 											</div>
 										);
@@ -307,7 +340,7 @@ export default function Table() {
 														padding: '5px 9px',
 													}}
 												>
-													Expired
+													Expiring
 												</div>
 											</div>
 										);
