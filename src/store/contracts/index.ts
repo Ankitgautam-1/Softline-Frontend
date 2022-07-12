@@ -16,7 +16,10 @@ const getContracts = createAsyncThunk('contract/getContract', async () => {
 			return err;
 		});
 });
-
+const editContract = createAsyncThunk(
+	'contract/editContract',
+	async (contract: Contract) => {}
+);
 const createContract = createAsyncThunk(
 	'contract/createContract',
 	async (contract: NewContract) => {

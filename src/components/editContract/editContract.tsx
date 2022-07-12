@@ -43,7 +43,7 @@ const EditContract: React.FC<Props> = ({
 	const dispatch: any = useDispatch();
 	const [selectedserviceItem, setselectedserviceItem] = useState<any>(null);
 	const [assets, setAssets] = useState<any>(null);
-	const [selectedID, setSelectedID] = useState<Number>(0);
+	const [selectedID, setSelectedID] = useState<number>(0);
 	const [selectedCompanyID, setselectedCompanyID] = useState<Number>(0);
 	const [selectedCompany, setSelectedCompany] = useState('');
 	const [multiSelectOptions, setMultiSelectOptions] = useState<any>([]);
@@ -77,18 +77,50 @@ const EditContract: React.FC<Props> = ({
 	useEffect(() => {
 		if (contract) {
 			setContractID(contract.id);
-			setstartDate(contract.startDate);
+
+			setstartDate(contract.startDate + '');
+
 			setendDate(contract.endDate);
-			console.log(contract.startDate);
 			setSelectedAgent(contract.projectManager);
 			setHours(contract.totalEntitlement);
 			const assetsData = contract.assets.map((asset: string) => {
 				return { value: asset, label: asset };
 			});
+			setContractName(contract.contractName);
+
 			setAssets(assetsData);
+			const serviceItem = contract.serviceItem.map((asset: string) => {
+				return { value: asset, label: asset };
+			});
+
+			setselectedserviceItem(serviceItem);
+			setHours(contract.totalEntitlement);
 			setSelectedCompany(contract.company);
+			setRemarks(contract.remarks);
 			setSelectedServicePkg(contract.servicePackage);
-			console.log('contract.servicePackage', contract.servicePackage);
+			const getServicePackage = async () => {
+				return axiosConfig.get('/api/v1/getServicePackage', {
+					headers: {
+						authorization: authReducer.accessToken.toString(),
+					},
+				});
+			};
+
+			getServicePackage().then((result) => {
+				if (
+					Array.isArray(result.data.servicePackage.service_categories)
+				) {
+					const data =
+						result.data.servicePackage.service_categories.filter(
+							(service: ServiceCategory) => {
+								return service.name === contract.servicePackage;
+							}
+						);
+
+					setSelectedServicePkg(data[0].name);
+					setSelectedID(data[0].id);
+				}
+			});
 		}
 	}, []);
 	useEffect(() => {
@@ -382,48 +414,59 @@ const EditContract: React.FC<Props> = ({
 								)}
 							</div>
 
-							<RangePicker
-								className="datePicker"
-								// defaultValue={[
-								// 	moment(moment(startDate), dateFormat),
-								// 	moment(moment(endDate), dateFormat),
-								// ]}
-								onChange={(e) => {
-									const startDate =
-										e?.[0]?.toDate().toString() ?? '';
-									const endDate =
-										e?.[1]?.toDate().toString() ?? '';
-									setstartDate(startDate);
-									setendDate(endDate);
-									const datediff = dateDiff(
-										moment(e?.[0]),
-										moment(e?.[1])
-									);
-									const years =
-										datediff.years > 0
-											? `${datediff.years} year `
-											: '';
-									const months =
-										datediff.months > 0
-											? `${datediff.months} month `
-											: '';
-									const days =
-										datediff.days > 0
-											? `${datediff.days} days `
-											: '';
+							{startDate !== '' && endDate !== '' && (
+								<>
+									<RangePicker
+										className="datePicker"
+										defaultValue={[
+											moment(startDate),
+											moment(endDate),
+										]}
+										onChange={(e) => {
+											const startDate =
+												e?.[0]?.toDate().toString() ??
+												'';
+											const endDate =
+												e?.[1]?.toDate().toString() ??
+												'';
+											setstartDate(startDate);
+											setendDate(endDate);
+											const datediff = dateDiff(
+												moment(e?.[0]),
+												moment(e?.[1])
+											);
+											const years =
+												datediff.years > 0
+													? `${datediff.years} year `
+													: '';
+											const months =
+												datediff.months > 0
+													? `${datediff.months} month `
+													: '';
+											const days =
+												datediff.days > 0
+													? `${datediff.days} days `
+													: '';
 
-									setContractPeriod(years + months + days);
-								}}
-								disabledDate={(current) => {
-									let customDate =
-										moment().format('YYYY-MM-DD');
-									return (
-										current &&
-										current <
-											moment(customDate, 'YYYY-MM-DD')
-									);
-								}}
-							/>
+											setContractPeriod(
+												years + months + days
+											);
+										}}
+										disabledDate={(current) => {
+											let customDate =
+												moment().format('YYYY-MM-DD');
+											return (
+												current &&
+												current <
+													moment(
+														customDate,
+														'YYYY-MM-DD'
+													)
+											);
+										}}
+									/>
+								</>
+							)}
 							<Typography className="label">
 								Type of Hours
 							</Typography>
@@ -468,6 +511,7 @@ const EditContract: React.FC<Props> = ({
 								className="textInput"
 								required
 								type={'text'}
+								value={contractName}
 								onChange={(e) => {
 									setContractName(e.target.value);
 								}}
@@ -480,8 +524,10 @@ const EditContract: React.FC<Props> = ({
 								className="selectInput"
 								name="List of Service Package"
 								id="List of Service Package"
+								value={selectedID + '' ?? '0'}
 								onChange={async (e) => {
 									setselectedserviceItem([]);
+
 									const id = parseInt(e.target.value);
 									setMultiSelectOptions(
 										listOfServiceItem
@@ -510,7 +556,7 @@ const EditContract: React.FC<Props> = ({
 									setSelectedID(id);
 								}}
 							>
-								<option defaultValue={'default'}>
+								<option defaultValue={'default'} value="0">
 									Select Service Package
 								</option>
 								{listOfServicePackage.map(
@@ -570,6 +616,7 @@ const EditContract: React.FC<Props> = ({
 								type="number"
 								min={1}
 								required
+								value={hours}
 								onChange={(e) => {
 									setHours(parseInt(e.target.value));
 								}}
@@ -578,6 +625,7 @@ const EditContract: React.FC<Props> = ({
 							<Input
 								className="textInput"
 								type="text"
+								value={remarks}
 								onChange={(e) => {
 									setRemarks(e.target.value);
 								}}
