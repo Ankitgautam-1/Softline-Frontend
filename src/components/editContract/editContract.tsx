@@ -107,6 +107,8 @@ const EditContract: React.FC<Props> = ({
 			};
 
 			getServicePackage().then((result) => {
+				console.log(result.data.servicePackage);
+
 				if (
 					Array.isArray(result.data.servicePackage.service_categories)
 				) {
