@@ -461,7 +461,6 @@ const ModalComponents: React.FC<Props> = ({
                 )}
               </select>
               <Typography className="label">Agents</Typography>
-
               <select
                 className="selectInput"
                 name="Select Agents"
