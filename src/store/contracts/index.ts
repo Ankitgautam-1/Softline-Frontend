@@ -18,7 +18,20 @@ const getContracts = createAsyncThunk('contract/getContract', async () => {
 });
 const editContract = createAsyncThunk(
 	'contract/editContract',
-	async (contract: Contract) => {}
+	async (updates: {}) => {
+		return axiosConfig
+			.post('/api/v1/editContract', { ...updates })
+			.then((resp) => {
+				if (resp.status === 201) {
+					return resp.data;
+				} else {
+					return resp;
+				}
+			})
+			.catch((err) => {
+				return err;
+			});
+	}
 );
 const createContract = createAsyncThunk(
 	'contract/createContract',
@@ -59,9 +72,7 @@ const contractSlice = createSlice({
 		});
 		builder.addCase(createContract.fulfilled, (state, action) => {
 			if (action.payload.ok) {
-				const newContract: Contract = action.payload.message;
-
-				state.push(newContract);
+				return action.payload.contract;
 			} else {
 				return state;
 			}
@@ -71,5 +82,5 @@ const contractSlice = createSlice({
 
 const contractReducer = contractSlice.reducer;
 export default contractReducer;
-export { getContracts, createContract };
+export { getContracts, createContract, editContract };
 export const { resetContract } = contractSlice.actions;

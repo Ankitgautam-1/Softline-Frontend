@@ -21,12 +21,29 @@ import { Department } from '../../interfaces/Companies';
 import ReactSelect from 'react-select';
 import { asstesOptions } from '../../Utils/constData';
 import { dateDiff } from '../../Utils/helperFunction';
-import { createContract } from '../../store/contracts';
-
+import { createContract, editContract } from '../../store/contracts';
+const initialValues: Contract = {
+	__v: 0,
+	_id: '',
+	assets: [''],
+	company: '',
+	contractName: '',
+	endDate: '',
+	id: '',
+	ownerId: '',
+	projectManager: '',
+	remarks: '',
+	serviceItem: [''],
+	servicePackage: '',
+	startDate: '',
+	totalEntitlement: 0,
+	typeOfHours: '',
+};
 type Props = {
 	handelCancel: () => void;
 	openModal: boolean;
 	contract: Contract | null;
+	handelRefresh: () => void;
 };
 type notifications = {
 	shownotification: boolean;
@@ -36,11 +53,15 @@ const EditContract: React.FC<Props> = ({
 	handelCancel,
 	openModal,
 	contract,
+	handelRefresh,
 }) => {
 	const authReducer = useSelector((state: { userReducer: userState }) => {
 		return state.userReducer;
 	});
+
 	const dispatch: any = useDispatch();
+	const [initialContract, setInitialContract] =
+		useState<Contract>(initialValues);
 	const [selectedserviceItem, setselectedserviceItem] = useState<any>(null);
 	const [assets, setAssets] = useState<any>(null);
 	const [selectedID, setSelectedID] = useState<number>(0);
@@ -76,6 +97,8 @@ const EditContract: React.FC<Props> = ({
 	const dateFormat = 'YYYY/MM/DD';
 	useEffect(() => {
 		if (contract) {
+			console.log('contract', contract);
+
 			setContractID(contract.id);
 
 			setstartDate(contract.startDate + '');
@@ -87,7 +110,7 @@ const EditContract: React.FC<Props> = ({
 				return { value: asset, label: asset };
 			});
 			setContractName(contract.contractName);
-
+			setserviceItem(contract.serviceItem);
 			setAssets(assetsData);
 			const serviceItem = contract.serviceItem.map((asset: string) => {
 				return { value: asset, label: asset };
@@ -98,6 +121,7 @@ const EditContract: React.FC<Props> = ({
 			setSelectedCompany(contract.company);
 			setRemarks(contract.remarks);
 			setSelectedServicePkg(contract.servicePackage);
+			setTypeHours(contract.typeOfHours);
 			const getServicePackage = async () => {
 				return axiosConfig.get('/api/v1/getServicePackage', {
 					headers: {
@@ -123,6 +147,11 @@ const EditContract: React.FC<Props> = ({
 					setSelectedID(data[0].id);
 				}
 			});
+		}
+	}, []);
+	useEffect(() => {
+		if (contract) {
+			setInitialContract(contract);
 		}
 	}, []);
 	useEffect(() => {
@@ -195,6 +224,21 @@ const EditContract: React.FC<Props> = ({
 			getData();
 		}
 	}, []);
+	function arraysEqual(a: any, b: any) {
+		if (a === b) return true;
+		if (a == null || b == null) return false;
+		if (a.length !== b.length) return false;
+
+		// If you don't care about the order of the elements inside
+		// the array, you should sort both arrays here.
+		// Please note that calling sort on an array will modify that array.
+		// you might want to clone your array first.
+
+		for (var i = 0; i < a.length; ++i) {
+			if (a[i] !== b[i]) return false;
+		}
+		return true;
+	}
 	const openNotification = (msg: string) => {
 		notification.error({
 			message: 'Contract',
@@ -256,54 +300,136 @@ const EditContract: React.FC<Props> = ({
 					const Items = selectedserviceItem.map((items) => {
 						return items.value;
 					});
+					if (contract !== null) {
+						const asset = assets.map((asset) => {
+							return asset.label;
+						});
+						const serviceItems = selectedserviceItem.map((item) => {
+							return item.label;
+						});
+						const updatedContract: Contract = {
+							__v: contract.__v,
+							_id: contract._id,
+							assets: asset,
+							company: selectedCompany,
+							contractName: contractName,
+							endDate: endDate,
+							id: contractID,
+							ownerId: contract.ownerId,
+							projectManager: selectedAgent,
+							remarks: remarks,
+							serviceItem: serviceItems,
+							servicePackage: selectedServicePkg,
+							startDate: startDate,
+							totalEntitlement: hours,
+							typeOfHours: typeHours,
+						};
+						let updatedValues: any = {};
+						Object.keys(updatedContract).forEach((key) => {
+							type ObjectKey = keyof typeof updatedContract;
+							const variable = key as ObjectKey;
 
-					const newContract: NewContract = {
-						id: contractID,
-						company: selectedCompany,
-						contractName: contractName,
-						ownerId: authReducer.userId.toString(),
-						typeOfHours: typeHours,
-						startDate: startDate.toString(),
-						endDate: endDate.toString(),
-						serviceItem: Items,
-						servicePackage: selectedServicePkg,
-						projectManager: selectedAgent,
-						remarks: remarks,
-						totalEntitlement: hours.toString(),
-						assets: data,
-					};
-					const result = await dispatch(createContract(newContract));
-					if (result.payload.ok) {
-						handelCancel();
-					} else {
-						if (
-							result.payload.message ===
-							'User Authentication faild'
-						) {
-							dispatch(unAuth());
-							setNoftification({
-								shownotification: true,
-								message: result.payload.response.data.message,
-							});
-							setTimeout(() => {
-								setNoftification({
-									shownotification: false,
-									message: '',
-								});
-							}, 5000);
-						} else {
-							setNoftification({
-								shownotification: true,
-								message: result.payload.response.data.message,
-							});
-							setTimeout(() => {
-								setNoftification({
-									shownotification: false,
-									message: '',
-								});
-							}, 5000);
+							if (
+								variable.toString() === 'assets' ||
+								variable.toString() === 'serviceItem'
+							) {
+								if (Array.isArray(initialContract[variable])) {
+									if (
+										!arraysEqual(
+											initialContract[variable],
+											updatedContract[variable]
+										)
+									) {
+										updatedValues[variable] =
+											updatedContract[variable];
+									}
+								}
+							} else {
+								if (
+									updatedContract[variable] !==
+									initialContract[variable]
+								) {
+									updatedValues[variable] =
+										updatedContract[variable];
+								}
+							}
+						});
+
+						console.log('updateValues', updatedValues);
+
+						if (Object.keys(updatedValues).length !== 0) {
+							updatedValues['id'] = initialContract.id;
+							console.log('final updatedValues', updatedValues);
+
+							const result = await dispatch(
+								editContract(updatedValues)
+							);
+							if (result.payload.ok) {
+								handelCancel();
+								handelRefresh();
+							}
 						}
 					}
+					// const newContract: NewContract = {
+					// 	id: contractID,
+					// 	company: selectedCompany,
+					// 	contractName: contractName,
+					// 	ownerId: authReducer.userId.toString(),
+					// 	typeOfHours: typeHours,
+					// 	startDate: startDate.toString(),
+					// 	endDate: endDate.toString(),
+					// 	serviceItem: Items,
+					// 	servicePackage: selectedServicePkg,
+					// 	projectManager: selectedAgent,
+					// 	remarks: remarks,
+					// 	totalEntitlement: hours.toString(),
+					// 	assets: data,
+					// };
+					// let distictValue = {};
+
+					// Object.keys(initialContract).forEach((key: string) => {
+					// 	// console.log(initialContract[key]);
+
+					// 	type ObjectKey = keyof typeof initialContract;
+					// 	const keys = key as ObjectKey;
+
+					// 	if (contract !== null) {
+					// 		console.log(contract[keys]);
+					// 	}
+					// });
+
+					// const result = await dispatch(createContract(newContract));
+					// if (result.payload.ok) {
+					// 	handelCancel();
+					// } else {
+					// 	if (
+					// 		result.payload.message ===
+					// 		'User Authentication faild'
+					// 	) {
+					// 		dispatch(unAuth());
+					// 		setNoftification({
+					// 			shownotification: true,
+					// 			message: result.payload.response.data.message,
+					// 		});
+					// 		setTimeout(() => {
+					// 			setNoftification({
+					// 				shownotification: false,
+					// 				message: '',
+					// 			});
+					// 		}, 5000);
+					// 	} else {
+					// 		setNoftification({
+					// 			shownotification: true,
+					// 			message: result.payload.response.data.message,
+					// 		});
+					// 		setTimeout(() => {
+					// 			setNoftification({
+					// 				shownotification: false,
+					// 				message: '',
+					// 			});
+					// 		}, 5000);
+					// 	}
+					// }
 				}
 			}
 		}
@@ -640,7 +766,7 @@ const EditContract: React.FC<Props> = ({
 						type="submit"
 						className="createContractBtn"
 					>
-						Create Contract
+						Update Contract
 					</button>
 				</form>
 			</div>

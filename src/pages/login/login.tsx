@@ -1,9 +1,9 @@
-import { Typography, useMediaQuery } from '@mui/material';
-import React, { useState } from 'react';
+import { useMediaQuery } from '@mui/material';
+import { useState } from 'react';
 import './Login.scss';
 
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Input, Space } from 'antd';
+import { Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { userSignIn, userState } from '../../store/userAuth/userAuthSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -73,24 +73,24 @@ const LoginPage = () => {
 					/>
 
 					<h3 className="passwordText">Password</h3>
-					<Space direction="vertical">
-						<Input.Password
-							required
-							minLength={5}
-							className="passwordField"
-							onChange={(e) => {
-								setPassword(e.target.value);
-							}}
-							placeholder="Password"
-							iconRender={(visible) =>
-								visible ? (
-									<EyeTwoTone />
-								) : (
-									<EyeInvisibleOutlined />
-								)
-							}
-						/>
-					</Space>
+
+					<Input.Password
+						required
+						minLength={5}
+						className="passwordField"
+						onChange={(e) => {
+							setPassword(e.target.value);
+						}}
+						placeholder="Password"
+						iconRender={(visible) =>
+							visible ? (
+								<EyeTwoTone className="rightIcon" />
+							) : (
+								<EyeInvisibleOutlined className="rightIcon" />
+							)
+						}
+					/>
+
 					<button type="submit" className="loginBtn">
 						Login
 					</button>
