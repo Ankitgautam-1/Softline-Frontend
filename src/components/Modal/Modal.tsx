@@ -220,6 +220,7 @@ const ModalComponents: React.FC<Props> = ({
             remarks: remarks,
             totalEntitlement: hours.toString(),
             assets: data,
+            state: "Active",
           };
           const result = await dispatch(createContract(newContract));
           if (result.payload.ok) {

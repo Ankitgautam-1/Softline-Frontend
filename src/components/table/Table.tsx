@@ -59,7 +59,6 @@ export default function Table() {
     return state.contractState;
   });
   const dispatch: any = useDispatch();
-
   const [viewContract, setViewContract] = useState<ViewContractProps>({
     openModal: false,
     contract: null,
