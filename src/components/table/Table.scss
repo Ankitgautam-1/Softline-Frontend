@@ -1,61 +1,80 @@
 .contanier {
-	.buttons {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		.createButton {
-			&:hover {
-				background-color: rgb(76, 133, 237);
-			}
-			font-family: 'Montserrat', sans-serif;
-			background-color: cornflowerblue;
-			border-radius: 5px;
-			margin: 10px;
-			text-transform: capitalize;
-			color: white;
-		}
-		.logoutBtn {
-			border: none;
-			transition: ease-in 200ms;
-			&:hover {
-				background-color: #f3dada;
-				margin-top: 3px;
-			}
-			font-family: 'Montserrat', sans-serif;
-			background-color: #f8e9e9;
-			border-radius: 5px;
-			margin: 10px;
-			text-transform: capitalize;
-			color: #e63333;
-		}
-	}
-	.table_container {
-		margin: 10px 10px;
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .createButton {
+      &:hover {
+        background-color: rgb(76, 133, 237);
+      }
+      font-family: "Montserrat", sans-serif;
+      background-color: cornflowerblue;
+      border-radius: 5px;
+      margin: 10px;
+      text-transform: capitalize;
+      color: white;
+    }
+    .logoutBtn {
+      border: none;
+      transition: ease-in 200ms;
+      &:hover {
+        background-color: #f3dada;
+        margin-top: 3px;
+      }
+      font-family: "Montserrat", sans-serif;
+      background-color: #f8e9e9;
+      border-radius: 5px;
+      margin: 10px;
+      text-transform: capitalize;
+      color: #e63333;
+    }
+  }
+  .table_container {
+    margin: 10px 10px;
+  }
+  .MuiDataGrid-root {
+    margin: 0px 10px;
+    ::-webkit-scrollbar {
+      background-color: #e1e1e1;
+      height: 13px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #8f8f8f;
+      border-radius: 10px; /* color of the scroll thumb */
+    }
+    .MuiDataGrid-columnHeaders {
+      background-color: #504f4f;
+      color: white;
+      .MuiSvgIcon-root {
+        color: white;
+      }
+    }
 
-		.MuiDataGrid-columnHeaders {
-			background-color: gray;
-			color: white;
-
-			z-index: 5;
-		}
-	}
+    .MuiTablePagination-selectLabel,
+    .MuiTablePagination-displayedRows {
+      margin: 0;
+    }
+    .MuiDataGrid-row:nth-child(even) {
+      background-color: #f6f6f6;
+    }
+  }
 }
 
 .ant-modal-content {
-	border-radius: 10px;
+  border-radius: 10px;
 
-	.createButton {
-		span {
-			font-family: 'Montserrat', sans-serif;
-		}
-		height: 45px;
-		&:hover {
-			background-color: rgb(24, 82, 189);
-		}
-		background-color: rgb(58, 85, 238);
-		border-radius: 5px;
-		padding: 0 20px;
-		text-transform: capitalize;
-		color: white;
-	}
+  .createButton {
+    span {
+      font-family: "Montserrat", sans-serif;
+    }
+    height: 45px;
+    &:hover {
+      background-color: rgb(24, 82, 189);
+    }
+    background-color: rgb(58, 85, 238);
+    border-radius: 5px;
+    padding: 0 20px;
+    text-transform: capitalize;
+    color: white;
+  }
 }
