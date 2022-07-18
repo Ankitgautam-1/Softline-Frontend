@@ -82,6 +82,7 @@
               box-shadow: none;
             }
           }
+
           .multiSelect {
             min-width: 350px;
             width: 100%;
@@ -163,6 +164,24 @@
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
 
+            &:focus,
+            &:hover {
+              outline: none;
+              border: 1px solid #d8d9da;
+              box-shadow: none;
+            }
+          }
+          .textArea {
+            width: 100%;
+            border: 1px solid #d8d9da;
+            border-radius: 8px;
+            outline: none;
+            padding: 10px 15px;
+            background-color: #f6fafd;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            min-height: 44px;
+            max-height: 115px;
             &:focus,
             &:hover {
               outline: none;

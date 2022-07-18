@@ -494,9 +494,8 @@ const ModalComponents: React.FC<Props> = ({
                 }}
               />
               <Typography className="label">Remarks</Typography>
-              <Input
-                className="textInput"
-                type="text"
+              <textarea
+                className="textArea"
                 onChange={(e) => {
                   setRemarks(e.target.value);
                 }}
