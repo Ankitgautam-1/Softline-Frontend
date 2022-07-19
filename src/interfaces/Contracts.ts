@@ -19,6 +19,7 @@ export interface Contract {
   remarks: string;
   ownerId: string;
   __v: number;
+  createdDate: Date;
 }
 
 export interface NewContract {
@@ -35,5 +36,5 @@ export interface NewContract {
   projectManager: string;
   remarks: string;
   ownerId: string;
-  state: string;
+  createdDate: Date;
 }

@@ -38,6 +38,7 @@ const initialValues: Contract = {
   startDate: "",
   totalEntitlement: 0,
   typeOfHours: "",
+  createdDate: new Date(),
 };
 type Props = {
   handelCancel: () => void;
@@ -104,6 +105,7 @@ const EditContract: React.FC<Props> = ({
       setendDate(contract.endDate);
       setSelectedAgent(contract.projectManager);
       setHours(contract.totalEntitlement);
+      setTypeHours(contract.typeOfHours);
       const assetsData = contract.assets.map((asset: string) => {
         return { value: asset, label: asset };
       });
@@ -316,6 +318,7 @@ const EditContract: React.FC<Props> = ({
               startDate: startDate,
               totalEntitlement: hours,
               typeOfHours: typeHours,
+              createdDate: contract.createdDate,
             };
             let updatedValues: any = {};
             Object.keys(updatedContract).forEach((key) => {
@@ -537,12 +540,6 @@ const EditContract: React.FC<Props> = ({
 
                       setContractPeriod(years + months + days);
                     }}
-                    disabledDate={(current) => {
-                      let customDate = moment().format("YYYY-MM-DD");
-                      return (
-                        current && current < moment(customDate, "YYYY-MM-DD")
-                      );
-                    }}
                   />
                 </>
               )}
@@ -550,6 +547,7 @@ const EditContract: React.FC<Props> = ({
               <select
                 name="typeOfHours"
                 className="selectInput"
+                value={typeHours}
                 onChange={(e) => {
                   setTypeHours(e.target.value.toString());
                 }}

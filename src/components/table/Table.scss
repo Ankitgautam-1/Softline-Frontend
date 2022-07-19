@@ -1,3 +1,5 @@
+@import "../../Utils/defaultsStyles.scss";
+
 .contanier {
   .buttons {
     display: flex;
@@ -5,10 +7,10 @@
     justify-content: space-between;
     .createButton {
       &:hover {
-        background-color: rgb(76, 133, 237);
+        background-color: $primary_color_hover;
       }
       font-family: "Montserrat", sans-serif;
-      background-color: cornflowerblue;
+      background-color: $primary_color;
       border-radius: 5px;
       margin: 10px;
       text-transform: capitalize;
@@ -26,7 +28,7 @@
       border-radius: 5px;
       margin: 10px;
       text-transform: capitalize;
-      color: #e63333;
+      color: $primary_color;
     }
   }
   .table_container {

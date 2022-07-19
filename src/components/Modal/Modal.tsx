@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "antd/dist/antd.css";
 const { RangePicker } = DatePicker;
 import "./Modal.scss";
@@ -23,6 +23,7 @@ import ReactSelect from "react-select";
 import { asstesOptions } from "../../Utils/constData";
 import { dateDiff } from "../../Utils/helperFunction";
 import { createContract } from "../../store/contracts";
+import { RangePickerProps } from "antd/lib/date-picker";
 type Props = {
   handelCancel: () => void;
   openModal: boolean;
@@ -61,13 +62,15 @@ const ModalComponents: React.FC<Props> = ({
   //contract details
   const [contractID, setContractID] = useState("");
   const [contractName, setContractName] = useState("");
-  const [startDate, setstartDate] = useState<string>("");
-  const [endDate, setendDate] = useState<string>("");
+  const [startDate, setstartDate] = useState<string | null>("");
+  const [endDate, setendDate] = useState<string | null>("");
   const [typeHours, setTypeHours] = useState("Proactive");
   const [selectedAgent, setSelectedAgent] = useState("");
   const [selectedServicePkg, setSelectedServicePkg] = useState("");
   const [remarks, setRemarks] = useState("");
   const [hours, setHours] = useState(0);
+  const formref = useRef<HTMLFormElement>(null);
+  const datePickerRef = useRef<any>();
   const [noftification, setNoftification] = useState<notifications>({
     message: "",
     shownotification: false,
@@ -202,7 +205,7 @@ const ModalComponents: React.FC<Props> = ({
           return asset.value;
         });
         if (Array.isArray(selectedserviceItem)) {
-          const Items = selectedserviceItem.map((items) => {
+          let Items: any[] = selectedserviceItem.map((items) => {
             return items.value;
           });
 
@@ -212,18 +215,36 @@ const ModalComponents: React.FC<Props> = ({
             contractName: contractName,
             ownerId: authReducer.userId.toString(),
             typeOfHours: typeHours,
-            startDate: startDate.toString(),
-            endDate: endDate.toString(),
+            startDate: startDate ?? "".toString(),
+            endDate: endDate ?? "".toString(),
             serviceItem: Items,
             servicePackage: selectedServicePkg,
             projectManager: selectedAgent,
             remarks: remarks,
             totalEntitlement: hours.toString(),
             assets: data,
-            state: "Active",
+            createdDate: new Date(),
           };
           const result = await dispatch(createContract(newContract));
           if (result.payload.ok) {
+            formref.current!.reset();
+            setContractID("");
+            setContractName("");
+            setstartDate(null);
+            setendDate(null);
+            Items = [];
+            setTypeHours("Proactive");
+            setselectedserviceItem([]);
+            setlistOfServiceItem([]);
+            setserviceItem([]);
+            setAssets([]);
+            setHours(1);
+            setSelectedAgent(
+              listOfAgents[0].first_name + " " + listOfAgents[0].last_name
+            );
+            setRemarks("");
+            setstartDate("");
+            setendDate("");
             updateContract();
             handelCancel();
           } else {
@@ -256,20 +277,20 @@ const ModalComponents: React.FC<Props> = ({
       }
     }
   }
-
+  const dataType: any = "";
   return (
     <Modal
       visible={openModal}
       onOk={handelCancel}
-      footer={[]}
-      style={{ top: 20 }}
+      footer={null}
+      style={{ top: 50 }}
       className="modal_container"
       onCancel={handelCancel}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
       <div className="contract_container">
-        <form onSubmit={handleSubmit} className="formClass">
+        <form onSubmit={handleSubmit} ref={formref} className="formClass">
           <div className="form_container">
             <Snackbar
               open={noftification.shownotification}
@@ -285,12 +306,13 @@ const ModalComponents: React.FC<Props> = ({
                 {noftification.message}
               </Alert>
             </Snackbar>
-            <div className="left_side" onSubmit={(e) => {}}>
+            <div className="left_side">
               <Typography className="label">Contract ID</Typography>
               <Input
                 className="textInput"
                 aria-label="contract"
                 required
+                value={contractID}
                 onChange={(e) => setContractID(e.target.value)}
               />
 
@@ -355,6 +377,18 @@ const ModalComponents: React.FC<Props> = ({
 
               <RangePicker
                 className="datePicker"
+                format="DD/MM/YYYY"
+                ref={datePickerRef}
+                defaultPickerValue={[
+                  startDate !== "" ? dataType : startDate,
+                  endDate !== "" ? dataType : endDate,
+                ]}
+                value={
+                  startDate && endDate
+                    ? [moment(startDate), moment(endDate)]
+                    : null
+                }
+                allowClear={true}
                 onChange={(e) => {
                   const startDate = e?.[0]?.toDate().toString() ?? "";
                   const endDate = e?.[1]?.toDate().toString() ?? "";
@@ -398,8 +432,6 @@ const ModalComponents: React.FC<Props> = ({
                 closeMenuOnSelect={false}
                 hideSelectedOptions={false}
                 onChange={(selected) => {
-                  console.log(assets);
-
                   setAssets(selected);
                 }}
                 value={assets}
@@ -411,6 +443,7 @@ const ModalComponents: React.FC<Props> = ({
                 className="textInput"
                 required
                 type={"text"}
+                value={contractName}
                 onChange={(e) => {
                   setContractName(e.target.value);
                 }}
@@ -494,9 +527,18 @@ const ModalComponents: React.FC<Props> = ({
                 }}
               />
               <Typography className="label">Remarks</Typography>
-              <Input
-                className="textInput"
-                type="text"
+              <textarea
+                className="textArea"
+                value={remarks}
+                onChange={(e) => {
+                  setRemarks(e.target.value);
+                }}
+              />
+              <Typography className="label">Files</Typography>
+              <input
+                type={"file"}
+                multiple
+                minLength={1}
                 onChange={(e) => {
                   setRemarks(e.target.value);
                 }}

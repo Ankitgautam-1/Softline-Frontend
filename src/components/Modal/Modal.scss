@@ -1,8 +1,10 @@
+@import "../../Utils/defaultsStyles.scss";
 .modal_container {
   min-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
+
   .contract_container {
     border-radius: 20px;
     padding: 0px 20px;
@@ -12,20 +14,22 @@
       flex-direction: column;
       align-items: flex-end;
       .createContractBtn {
-        background-color: rgb(55, 82, 214);
+        background: $primary_color;
         padding: 0px 20px;
         height: 45px;
         color: white;
+
         border-radius: 10px;
 
         width: fit-content;
         border: none;
-        span {
-          font-family: "Montserrat", sans-serif;
-          font-weight: 500;
-        }
+
+        font-family: "Montserrat", sans-serif;
+        font-weight: 500;
+        letter-spacing: 1px;
+
         &:hover {
-          background-color: rgb(35, 60, 187);
+          background-color: $primary_color_hover;
         }
       }
       .heading {
@@ -57,7 +61,7 @@
             max-width: 400px;
             padding: 10px 15px;
             border-radius: 8px;
-            background-color: #f6fafd;
+            background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
             border: 1px rgb(200, 200, 200) solid;
@@ -72,13 +76,13 @@
             border-radius: 8px;
             outline: none;
             padding: 10px 15px;
-            background-color: #f6fafd;
+            background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
             &:focus,
             &:hover {
               outline: none;
-              border: 1px solid #d8d9da;
+              border: 1px solid $input_border_color;
               box-shadow: none;
             }
           }
@@ -92,20 +96,20 @@
             max-width: 400px;
             .css-1s2u09g-control {
               border: 1px solid #dad9d8;
-              background-color: #f6fafd;
+              background-color: $input_background_color;
               border-radius: 8px;
             }
             .css-1pahdxg-control {
-              background-color: #f6fafd;
+              background-color: $input_background_color;
               outline: none;
               border: none;
               border-radius: 8px;
 
-              border: 1px solid #d8d9da;
+              border: 1px solid $input_border_color;
               &:focus,
               &:focus-within,
               &:hover {
-                border: 1px solid #d8d9da;
+                border: 1px solid $input_border_color;
                 box-shadow: none;
               }
             }
@@ -138,7 +142,7 @@
             }
             height: 45px;
             padding: 6px 25px;
-            background-color: #f6fafd;
+            background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
           }
         }
@@ -159,14 +163,14 @@
             border-radius: 8px;
             outline: none;
             padding: 10px 15px;
-            background-color: #f6fafd;
+            background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
 
             &:focus,
             &:hover {
               outline: none;
-              border: 1px solid #d8d9da;
+              border: 1px solid $input_border_color;
               box-shadow: none;
             }
           }
@@ -175,16 +179,34 @@
             max-width: 400px;
             padding: 10px 15px;
             border-radius: 8px;
-            background-color: #f6fafd;
+            background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
             font-weight: 500;
-            border: 1px rgb(200, 200, 200) solid;
+            border: 1px $input_border_color solid;
             &:focus {
               outline: none;
             }
+          }
+          .textArea {
+            width: 100%;
+            max-width: 400px;
+            max-height: 120px;
+            min-height: 44px;
+            height: 44px;
+            background-color: $input_background_color;
+            border-radius: 8px;
+            outline: none;
+            padding: 10px 15px;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            border: 1px $input_border_color solid;
           }
         }
       }
     }
   }
+}
+
+.ant-modal-content {
+  border-radius: 15px;
 }

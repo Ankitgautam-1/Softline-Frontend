@@ -119,9 +119,9 @@ export default function Table() {
   ) => {
     let url;
     if (filterData && filterColumn) {
-      url = `http://localhost:3001/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
+      url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
     } else {
-      url = `http://localhost:3001/api/v1/paginated?page=1&limit=${custompageSize}`;
+      url = `/api/v1/paginated?page=1&limit=${custompageSize}`;
     }
     const response = await axiosConfig.get(url);
     const resultData = await response.data;
@@ -149,23 +149,54 @@ export default function Table() {
     console.log("pgN", pgN);
 
     if (filterData && filterColumn) {
-      url = `http://localhost:3001/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
+      url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
       console.log("getting this data", url);
     } else {
-      url = `http://localhost:3001/api/v1/paginated?page=${pgN}&limit=${pageSize}`;
+      url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}`;
     }
     const response = await axiosConfig.get(url);
     const resultData = await response.data;
-    console.log("resultData", resultData);
+    if (resultData.contract.length > 0) {
+      const newList = resultData.contract.map((item: Contract) => {
+        const currentDate = moment();
+        const startDate = moment(item.startDate);
 
-    setPageState((old) => ({
-      ...old,
-      isLoading: false,
-      listOfContract: resultData.contract,
-      currentPage: parseInt(resultData.currentPage),
-      totalPages: resultData.totalPages,
-      totalRow: resultData.totalRow,
-    }));
+        if (startDate.isAfter(currentDate)) {
+          return { ...item, state: "Not Started" };
+        } else {
+          const endDate = moment(item.endDate);
+
+          const diff = endDate.diff(currentDate, "days");
+          console.log("diff", diff);
+
+          if (diff > 20) {
+            return { ...item, state: "Active" };
+          } else if (diff > 0 && diff < 20) {
+            return { ...item, state: "Expiring" };
+          } else {
+            return { ...item, state: "Expired" };
+          }
+        }
+      });
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        listOfContract: newList,
+        currentPage: parseInt(resultData.currentPage),
+        totalPages: resultData.totalPages,
+        totalRow: resultData.totalRow,
+      }));
+    } else {
+      setPageState((old) => ({
+        ...old,
+        isLoading: false,
+        listOfContract: resultData.contract,
+        currentPage: parseInt(resultData.currentPage),
+        totalPages: resultData.totalPages,
+        totalRow: resultData.totalRow,
+      }));
+    }
+    console.log("resultData", resultData);
   };
 
   useEffect(() => {
@@ -359,105 +390,25 @@ export default function Table() {
               headerName: "State",
               width: 110,
               renderCell(params) {
-                const startDate = moment(params.row.startDate);
-                const endDate = moment(params.row.endDate);
-                const diff = dateDiff(startDate, endDate);
-                const dateDifference = endDate.diff(new Date(), "days");
-
-                const days =
-                  dateDifference > 0 ? `${dateDifference} days ` : "";
-
-                if (dateDifference > 20) {
+                if (params.value === "Active") {
                   return (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    >
-                      <div
-                        style={{
-                          color: "#06bb30",
-                          minWidth: "80px",
-
-                          borderRadius: "6px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: "transparent",
-                          padding: "5px 9px",
-                        }}
-                      >
-                        Active
-                      </div>
-                    </div>
+                    <span style={{ color: "#06bb30" }}>{params.value}</span>
                   );
-                } else if (dateDifference > 0 && dateDifference <= 20) {
+                } else if (params.value === "Not Started") {
                   return (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    >
-                      <div
-                        style={{
-                          color: "#ed940f",
-                          minWidth: "80px",
-                          backgroundColor: "transparent",
-                          borderRadius: "6px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-
-                          padding: "5px 9px",
-                        }}
-                      >
-                        Expring
-                      </div>
-                    </div>
+                    <span style={{ color: "#78ac7d" }}>{params.value}</span>
                   );
+                } else if (params.value === "Expiring") {
+                  return <span style={{ color: "red" }}>{params.value}</span>;
                 } else {
-                  return (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: "100%",
-                        width: "100%",
-                      }}
-                    >
-                      <div
-                        style={{
-                          color: "#d42c2c",
-                          minWidth: "80px",
-
-                          borderRadius: "6px",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: "transparent",
-                          padding: "5px 9px",
-                        }}
-                      >
-                        Expired
-                      </div>
-                    </div>
-                  );
+                  return <span style={{ color: "red" }}>{params.value}</span>;
                 }
               },
             },
             {
               field: "id",
               headerName: "ID",
-              width: 35,
+              width: 85,
               filterable: true,
             },
             {
