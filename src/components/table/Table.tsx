@@ -398,16 +398,33 @@ export default function Table() {
               renderCell(params) {
                 if (params.value === "Active") {
                   return (
-                    <span style={{ color: "#06bb30" }}>{params.value}</span>
+                    <span style={{ color: "#06bb30", fontSize: "16px" }}>
+                      {params.value}
+                    </span>
                   );
                 } else if (params.value === "Not Started") {
                   return (
-                    <span style={{ color: "#78ac7d" }}>{params.value}</span>
+                    <span style={{ color: "#78ac7d", fontSize: "16px" }}>
+                      {params.value}
+                    </span>
                   );
                 } else if (params.value === "Expiring") {
-                  return <span style={{ color: "red" }}>{params.value}</span>;
+                  return (
+                    <span style={{ color: "#f1ae14", fontSize: "16px" }}>
+                      {params.value}
+                    </span>
+                  );
                 } else {
-                  return <span style={{ color: "red" }}>{params.value}</span>;
+                  return (
+                    <span
+                      style={{
+                        color: "red",
+                        fontSize: "16px",
+                      }}
+                    >
+                      {params.value}
+                    </span>
+                  );
                 }
               },
             },
