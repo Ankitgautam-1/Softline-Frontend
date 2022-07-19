@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "antd/dist/antd.css";
 const { RangePicker } = DatePicker;
 import "./Modal.scss";
@@ -23,6 +23,7 @@ import ReactSelect from "react-select";
 import { asstesOptions } from "../../Utils/constData";
 import { dateDiff } from "../../Utils/helperFunction";
 import { createContract } from "../../store/contracts";
+import { RangePickerProps } from "antd/lib/date-picker";
 type Props = {
   handelCancel: () => void;
   openModal: boolean;
@@ -68,6 +69,8 @@ const ModalComponents: React.FC<Props> = ({
   const [selectedServicePkg, setSelectedServicePkg] = useState("");
   const [remarks, setRemarks] = useState("");
   const [hours, setHours] = useState(0);
+  const formref = useRef<HTMLFormElement>(null);
+  const datePickerRef = useRef<any>();
   const [noftification, setNoftification] = useState<notifications>({
     message: "",
     shownotification: false,
@@ -152,111 +155,125 @@ const ModalComponents: React.FC<Props> = ({
   };
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    // formref.current!.reset();
+    // setContractID("");
+    // setContractName("");
 
-    if (selectedCompany === "") {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Company",
-      });
+    setselectedserviceItem([]);
+    setlistOfServiceItem([]);
+    setserviceItem([]);
+    // setAssets([]);
+    // setSelectedAgent(
+    //   listOfAgents[0].first_name + " " + listOfAgents[0].last_name
+    // );
+    console.log("date", datePickerRef);
+    setstartDate("");
+    setendDate("");
+    // datePickerRef.current!.reset();
+    // if (selectedCompany === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Company",
+    //   });
 
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (selectedServicePkg === "") {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Service Package",
-      });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (selectedServicePkg === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Service Package",
+    //   });
 
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (selectedserviceItem.length < 1) {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Service item",
-      });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (selectedserviceItem.length < 1) {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Service item",
+    //   });
 
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (startDate === "" || endDate === "") {
-      setNoftification({
-        shownotification: true,
-        message: "Select a contract period",
-      });
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (!Array.isArray(assets) || assets.length < 1) {
-      setNoftification({
-        shownotification: true,
-        message: "Select a assets",
-      });
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else {
-      if (Array.isArray(assets)) {
-        const data = assets.map((asset) => {
-          return asset.value;
-        });
-        if (Array.isArray(selectedserviceItem)) {
-          const Items = selectedserviceItem.map((items) => {
-            return items.value;
-          });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (startDate === "" || endDate === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a contract period",
+    //   });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (!Array.isArray(assets) || assets.length < 1) {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a assets",
+    //   });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else {
+    //   if (Array.isArray(assets)) {
+    //     const data = assets.map((asset) => {
+    //       return asset.value;
+    //     });
+    //     if (Array.isArray(selectedserviceItem)) {
+    //       const Items = selectedserviceItem.map((items) => {
+    //         return items.value;
+    //       });
 
-          const newContract: NewContract = {
-            id: contractID,
-            company: selectedCompany,
-            contractName: contractName,
-            ownerId: authReducer.userId.toString(),
-            typeOfHours: typeHours,
-            startDate: startDate.toString(),
-            endDate: endDate.toString(),
-            serviceItem: Items,
-            servicePackage: selectedServicePkg,
-            projectManager: selectedAgent,
-            remarks: remarks,
-            totalEntitlement: hours.toString(),
-            assets: data,
-            state: "Active",
-          };
-          const result = await dispatch(createContract(newContract));
-          if (result.payload.ok) {
-            updateContract();
-            handelCancel();
-          } else {
-            if (result.payload.message === "User Authentication faild") {
-              dispatch(unAuth());
-              setNoftification({
-                shownotification: true,
-                message: result.payload.response.data.message,
-              });
-              setTimeout(() => {
-                setNoftification({
-                  shownotification: false,
-                  message: "",
-                });
-              }, 5000);
-            } else {
-              setNoftification({
-                shownotification: true,
-                message: result.payload.response.data.message,
-              });
-              setTimeout(() => {
-                setNoftification({
-                  shownotification: false,
-                  message: "",
-                });
-              }, 5000);
-            }
-          }
-        }
-      }
-    }
+    //       const newContract: NewContract = {
+    //         id: contractID,
+    //         company: selectedCompany,
+    //         contractName: contractName,
+    //         ownerId: authReducer.userId.toString(),
+    //         typeOfHours: typeHours,
+    //         startDate: startDate.toString(),
+    //         endDate: endDate.toString(),
+    //         serviceItem: Items,
+    //         servicePackage: selectedServicePkg,
+    //         projectManager: selectedAgent,
+    //         remarks: remarks,
+    //         totalEntitlement: hours.toString(),
+    //         assets: data,
+    //         state: "Active",
+    //       };
+    //       const result = await dispatch(createContract(newContract));
+    //       if (result.payload.ok) {
+    //         updateContract();
+    //         handelCancel();
+    //       } else {
+    //         if (result.payload.message === "User Authentication faild") {
+    //           dispatch(unAuth());
+    //           setNoftification({
+    //             shownotification: true,
+    //             message: result.payload.response.data.message,
+    //           });
+    //           setTimeout(() => {
+    //             setNoftification({
+    //               shownotification: false,
+    //               message: "",
+    //             });
+    //           }, 5000);
+    //         } else {
+    //           setNoftification({
+    //             shownotification: true,
+    //             message: result.payload.response.data.message,
+    //           });
+    //           setTimeout(() => {
+    //             setNoftification({
+    //               shownotification: false,
+    //               message: "",
+    //             });
+    //           }, 5000);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
   }
-
+  const dataType: any = "";
   return (
     <Modal
       visible={openModal}
@@ -269,7 +286,7 @@ const ModalComponents: React.FC<Props> = ({
       aria-describedby="modal-modal-description"
     >
       <div className="contract_container">
-        <form onSubmit={handleSubmit} className="formClass">
+        <form onSubmit={handleSubmit} ref={formref} className="formClass">
           <div className="form_container">
             <Snackbar
               open={noftification.shownotification}
@@ -285,12 +302,13 @@ const ModalComponents: React.FC<Props> = ({
                 {noftification.message}
               </Alert>
             </Snackbar>
-            <div className="left_side" onSubmit={(e) => {}}>
+            <div className="left_side">
               <Typography className="label">Contract ID</Typography>
               <Input
                 className="textInput"
                 aria-label="contract"
                 required
+                value={contractID}
                 onChange={(e) => setContractID(e.target.value)}
               />
 
@@ -355,6 +373,13 @@ const ModalComponents: React.FC<Props> = ({
 
               <RangePicker
                 className="datePicker"
+                format="DD/MM/YYYY"
+                ref={datePickerRef}
+                defaultPickerValue={[
+                  startDate !== "" ? dataType : startDate,
+                  endDate !== "" ? dataType : endDate,
+                ]}
+                allowClear={true}
                 onChange={(e) => {
                   const startDate = e?.[0]?.toDate().toString() ?? "";
                   const endDate = e?.[1]?.toDate().toString() ?? "";
@@ -398,8 +423,6 @@ const ModalComponents: React.FC<Props> = ({
                 closeMenuOnSelect={false}
                 hideSelectedOptions={false}
                 onChange={(selected) => {
-                  console.log(assets);
-
                   setAssets(selected);
                 }}
                 value={assets}
@@ -411,6 +434,7 @@ const ModalComponents: React.FC<Props> = ({
                 className="textInput"
                 required
                 type={"text"}
+                value={contractName}
                 onChange={(e) => {
                   setContractName(e.target.value);
                 }}
