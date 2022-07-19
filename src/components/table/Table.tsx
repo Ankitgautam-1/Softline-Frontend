@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { unAuth, userState } from "../../store/userAuth/userAuthSlice";
 import { Box, Typography, Button, Popover } from "@mui/material";
 
-import { DatePicker, Input, Space } from "antd";
+import { DatePicker, Input, Space, Tooltip } from "antd";
 import moment, { Moment } from "moment";
 import { ServiceCategory } from "../../interfaces/ServicePackage";
 import { ServiceItem } from "../../interfaces/ServiceItem";
@@ -119,7 +119,11 @@ export default function Table() {
   ) => {
     let url;
     if (filterData && filterColumn) {
+<<<<<<< HEAD
       url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
+=======
+      url = `/api/v1/paginated?page=${pgN}&limit=${custompageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
+>>>>>>> 582537ad2a5b3ddc054a22d9496dca22b69e779c
     } else {
       url = `/api/v1/paginated?page=1&limit=${custompageSize}`;
     }
@@ -315,8 +319,8 @@ export default function Table() {
 
               fetchDataForNewPageSize(
                 newPageSize,
-                queryOptions.field,
-                queryOptions.value
+                queryOptions.value,
+                queryOptions.field
               );
             } else {
               console.log("else called");
@@ -340,47 +344,53 @@ export default function Table() {
                     }}
                   >
                     {" "}
-                    <AiFillEye
-                      style={{
-                        cursor: "pointer",
+                    <Tooltip title="View" color={"#2e2d2d"}>
+                      <AiFillEye
+                        style={{
+                          cursor: "pointer",
 
-                        borderRadius: 5,
-                        border: "none",
-                        padding: "5px",
-                        backgroundColor: "#06bb30",
-                        color: "#f3f3f3",
-                      }}
-                      size="30"
-                      onClick={(e) => {
-                        handleOpenViewContract(params.row);
-                      }}
-                    />
-                    <FiEdit
-                      style={{
-                        cursor: "pointer",
+                          borderRadius: 5,
+                          border: "none",
+                          padding: "5px",
+                          backgroundColor: "#06bb30",
+                          color: "#f3f3f3",
+                        }}
+                        size="30"
+                        onClick={(e) => {
+                          handleOpenViewContract(params.row);
+                        }}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Edit" color={"#2e2d2d"}>
+                      <FiEdit
+                        style={{
+                          cursor: "pointer",
 
-                        borderRadius: 5,
-                        border: "none",
-                        padding: "5px",
-                        backgroundColor: "#06bb30",
-                        color: "#f3f3f3",
-                      }}
-                      size="30"
-                      onClick={(e) => {
-                        handleOpenEditContract(params.row);
-                      }}
-                    />
-                    <AiFillDelete
-                      style={{
-                        cursor: "pointer",
-                        borderRadius: 5,
-                        border: "none",
-                        padding: "5px",
-                        backgroundColor: "#d42c2c",
-                        color: "#f3f3f3",
-                      }}
-                      size="30"
-                    />
+                          borderRadius: 5,
+                          border: "none",
+                          padding: "5px",
+                          backgroundColor: "#06bb30",
+                          color: "#f3f3f3",
+                        }}
+                        size="30"
+                        onClick={(e) => {
+                          handleOpenEditContract(params.row);
+                        }}
+                      />
+                    </Tooltip>
+                    <Tooltip title="Deactive" color={"#2e2d2d"}>
+                      <AiFillDelete
+                        style={{
+                          cursor: "pointer",
+                          borderRadius: 5,
+                          border: "none",
+                          padding: "5px",
+                          backgroundColor: "#d42c2c",
+                          color: "#f3f3f3",
+                        }}
+                        size="30"
+                      />
+                    </Tooltip>
                   </div>
                 );
               },

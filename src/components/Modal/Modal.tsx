@@ -155,31 +155,46 @@ const ModalComponents: React.FC<Props> = ({
   };
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
+    // formref.current!.reset();
+    // setContractID("");
+    // setContractName("");
 
-    if (selectedCompany === "") {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Company",
-      });
+    setselectedserviceItem([]);
+    setlistOfServiceItem([]);
+    setserviceItem([]);
+    // setAssets([]);
+    // setSelectedAgent(
+    //   listOfAgents[0].first_name + " " + listOfAgents[0].last_name
+    // );
+    console.log("date", datePickerRef);
+    setstartDate("");
+    setendDate("");
+    // datePickerRef.current!.reset();
+    // if (selectedCompany === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Company",
+    //   });
 
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (selectedServicePkg === "") {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Service Package",
-      });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (selectedServicePkg === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Service Package",
+    //   });
 
-      setTimeout(() => {
-        setNoftification({ shownotification: false, message: "" });
-      }, 5000);
-    } else if (selectedserviceItem.length < 1) {
-      setNoftification({
-        shownotification: true,
-        message: "Select a Service item",
-      });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (selectedserviceItem.length < 1) {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a Service item",
+    //   });
 
+<<<<<<< HEAD
       setTimeout(() => {
         setNoftification({ shownotification: false, message: "" });
       }, 5000);
@@ -276,6 +291,86 @@ const ModalComponents: React.FC<Props> = ({
         }
       }
     }
+=======
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (startDate === "" || endDate === "") {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a contract period",
+    //   });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else if (!Array.isArray(assets) || assets.length < 1) {
+    //   setNoftification({
+    //     shownotification: true,
+    //     message: "Select a assets",
+    //   });
+    //   setTimeout(() => {
+    //     setNoftification({ shownotification: false, message: "" });
+    //   }, 5000);
+    // } else {
+    //   if (Array.isArray(assets)) {
+    //     const data = assets.map((asset) => {
+    //       return asset.value;
+    //     });
+    //     if (Array.isArray(selectedserviceItem)) {
+    //       const Items = selectedserviceItem.map((items) => {
+    //         return items.value;
+    //       });
+
+    //       const newContract: NewContract = {
+    //         id: contractID,
+    //         company: selectedCompany,
+    //         contractName: contractName,
+    //         ownerId: authReducer.userId.toString(),
+    //         typeOfHours: typeHours,
+    //         startDate: startDate.toString(),
+    //         endDate: endDate.toString(),
+    //         serviceItem: Items,
+    //         servicePackage: selectedServicePkg,
+    //         projectManager: selectedAgent,
+    //         remarks: remarks,
+    //         totalEntitlement: hours.toString(),
+    //         assets: data,
+    //         state: "Active",
+    //       };
+    //       const result = await dispatch(createContract(newContract));
+    //       if (result.payload.ok) {
+    //         updateContract();
+    //         handelCancel();
+    //       } else {
+    //         if (result.payload.message === "User Authentication faild") {
+    //           dispatch(unAuth());
+    //           setNoftification({
+    //             shownotification: true,
+    //             message: result.payload.response.data.message,
+    //           });
+    //           setTimeout(() => {
+    //             setNoftification({
+    //               shownotification: false,
+    //               message: "",
+    //             });
+    //           }, 5000);
+    //         } else {
+    //           setNoftification({
+    //             shownotification: true,
+    //             message: result.payload.response.data.message,
+    //           });
+    //           setTimeout(() => {
+    //             setNoftification({
+    //               shownotification: false,
+    //               message: "",
+    //             });
+    //           }, 5000);
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+>>>>>>> 582537ad2a5b3ddc054a22d9496dca22b69e779c
   }
   const dataType: any = "";
   return (
@@ -383,11 +478,14 @@ const ModalComponents: React.FC<Props> = ({
                   startDate !== "" ? dataType : startDate,
                   endDate !== "" ? dataType : endDate,
                 ]}
+<<<<<<< HEAD
                 value={
                   startDate && endDate
                     ? [moment(startDate), moment(endDate)]
                     : null
                 }
+=======
+>>>>>>> 582537ad2a5b3ddc054a22d9496dca22b69e779c
                 allowClear={true}
                 onChange={(e) => {
                   const startDate = e?.[0]?.toDate().toString() ?? "";
@@ -529,6 +627,7 @@ const ModalComponents: React.FC<Props> = ({
               <Typography className="label">Remarks</Typography>
               <textarea
                 className="textArea"
+<<<<<<< HEAD
                 value={remarks}
                 onChange={(e) => {
                   setRemarks(e.target.value);
@@ -539,6 +638,8 @@ const ModalComponents: React.FC<Props> = ({
                 type={"file"}
                 multiple
                 minLength={1}
+=======
+>>>>>>> 582537ad2a5b3ddc054a22d9496dca22b69e779c
                 onChange={(e) => {
                   setRemarks(e.target.value);
                 }}
