@@ -119,11 +119,7 @@ export default function Table() {
   ) => {
     let url;
     if (filterData && filterColumn) {
-<<<<<<< HEAD
       url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
-=======
-      url = `/api/v1/paginated?page=${pgN}&limit=${custompageSize}&filterValue=${filterData}&filterColumn=${filterColumn}`;
->>>>>>> 582537ad2a5b3ddc054a22d9496dca22b69e779c
     } else {
       url = `/api/v1/paginated?page=1&limit=${custompageSize}`;
     }
