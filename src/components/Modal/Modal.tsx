@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import "antd/dist/antd.css";
 const { RangePicker } = DatePicker;
 import "./Modal.scss";
+import download from "downloadjs";
 import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../Utils/axiosConfig";
 import { Contract, NewContract } from "../../interfaces/Contracts";
@@ -77,6 +78,7 @@ const ModalComponents: React.FC<Props> = ({
     message: "",
     shownotification: false,
   });
+
   useEffect(() => {
     const getCompanies = async () => {
       return axiosConfig.get("/api/v1/getCompanies", {
@@ -157,11 +159,7 @@ const ModalComponents: React.FC<Props> = ({
   };
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    axiosConfig
-      .get("http://localhost:3001/api/v1/getFiles?folder=001")
-      .then((res) => {
-        console.log("res", res);
-      });
+
     if (selectedCompany === "") {
       setNoftification({
         shownotification: true,
@@ -230,6 +228,7 @@ const ModalComponents: React.FC<Props> = ({
             totalEntitlement: hours.toString(),
             assets: data,
             createdDate: new Date(),
+            files: files ? (files.length > 0 ? true : false) : false,
           };
           if (newContract.id !== null && newContract.id !== "") {
             formData.append("id", newContract.id);
@@ -278,7 +277,7 @@ const ModalComponents: React.FC<Props> = ({
             Items = [];
             setTypeHours("Proactive");
             setselectedserviceItem([]);
-            setlistOfServiceItem([]);
+
             setserviceItem([]);
 
             setAssets([]);
@@ -569,7 +568,11 @@ const ModalComponents: React.FC<Props> = ({
                 value={hours}
                 required
                 onChange={(e) => {
-                  setHours(parseInt(e.target.value));
+                  if (e.target.value) {
+                    setHours(parseInt(e.target.value));
+                  } else {
+                    setHours(0);
+                  }
                 }}
               />
               <Typography className="label">Remarks</Typography>

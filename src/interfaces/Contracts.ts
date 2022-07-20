@@ -20,6 +20,7 @@ export interface Contract {
   ownerId: string;
   __v: number;
   createdDate: Date;
+  files: boolean;
 }
 
 export interface NewContract {
@@ -37,4 +38,5 @@ export interface NewContract {
   remarks: string;
   ownerId: string;
   createdDate: Date;
+  files: boolean;
 }

@@ -39,6 +39,7 @@ const initialValues: Contract = {
   totalEntitlement: 0,
   typeOfHours: "",
   createdDate: new Date(),
+  files: false,
 };
 type Props = {
   handelCancel: () => void;
@@ -319,6 +320,7 @@ const EditContract: React.FC<Props> = ({
               totalEntitlement: hours,
               typeOfHours: typeHours,
               createdDate: contract.createdDate,
+              files: contract.files,
             };
             let updatedValues: any = {};
             Object.keys(updatedContract).forEach((key) => {

@@ -23,9 +23,10 @@ import { FiEdit } from "react-icons/fi";
 import ViewContract from "../viewContract/viewContract";
 import { dateDiff } from "../../Utils/helperFunction";
 import { DeleteForever } from "@mui/icons-material";
-
+import download from "downloadjs";
 import axiosConfig from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+
 interface ViewContractProps {
   contract: Contract | null;
   openModal: boolean;
@@ -67,7 +68,12 @@ export default function Table() {
     openModal: false,
     contract: null,
   });
-
+  const downloadFiles = (folder: string) => {
+    axiosConfig.get(`api/v1/getFiles?folder=${folder}`).then((res) => {
+      console.log("file1", res);
+      download(res.data, `${folder}.tar`);
+    });
+  };
   const [pageSize, setpageSize] = useState(10);
   //contract details
 
@@ -497,6 +503,35 @@ export default function Table() {
               field: "remarks",
               headerName: "Remarks",
               width: 120,
+            },
+            {
+              field: "files",
+              headerName: "Files",
+              width: 120,
+              renderCell(params) {
+                return (
+                  params.value && (
+                    <div>
+                      <Tooltip title="View" color={"#2e2d2d"}>
+                        <AiFillEye
+                          style={{
+                            cursor: "pointer",
+                            borderRadius: 5,
+                            border: "none",
+                            padding: "5px",
+                            backgroundColor: "#06bb30",
+                            color: "#f3f3f3",
+                          }}
+                          size="30"
+                          onClick={(e) => {
+                            downloadFiles(params.row.id);
+                          }}
+                        ></AiFillEye>
+                      </Tooltip>{" "}
+                    </div>
+                  )
+                );
+              },
             },
           ]}
         />
