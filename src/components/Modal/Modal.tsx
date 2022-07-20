@@ -42,6 +42,7 @@ const ModalComponents: React.FC<Props> = ({
   const authReducer = useSelector((state: { userReducer: userState }) => {
     return state.userReducer;
   });
+  const formData = new FormData();
   const dispatch: any = useDispatch();
   const [selectedserviceItem, setselectedserviceItem] = useState<any>(null);
   const [assets, setAssets] = useState<any>(null);
@@ -156,143 +157,169 @@ const ModalComponents: React.FC<Props> = ({
   };
   async function handleSubmit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (formref.current && contractID !== "" && contractID !== "") {
-      const formData = new FormData();
-      formData.append("contract_id", contractID);
-      if (files) {
-        for (let i = 0; i < files.length; i++) {
-          formData.append(files[i].name, files[i]);
+    axiosConfig
+      .get("http://localhost:3001/api/v1/getFiles?folder=001")
+      .then((res) => {
+        console.log("res", res);
+      });
+    if (selectedCompany === "") {
+      setNoftification({
+        shownotification: true,
+        message: "Select a Company",
+      });
+
+      setTimeout(() => {
+        setNoftification({ shownotification: false, message: "" });
+      }, 5000);
+    } else if (selectedServicePkg === "") {
+      setNoftification({
+        shownotification: true,
+        message: "Select a Service Package",
+      });
+
+      setTimeout(() => {
+        setNoftification({ shownotification: false, message: "" });
+      }, 5000);
+    } else if (selectedserviceItem.length < 1) {
+      setNoftification({
+        shownotification: true,
+        message: "Select a Service item",
+      });
+
+      setTimeout(() => {
+        setNoftification({ shownotification: false, message: "" });
+      }, 5000);
+    } else if (startDate === "" || endDate === "") {
+      setNoftification({
+        shownotification: true,
+        message: "Select a contract period",
+      });
+      setTimeout(() => {
+        setNoftification({ shownotification: false, message: "" });
+      }, 5000);
+    } else if (!Array.isArray(assets) || assets.length < 1) {
+      setNoftification({
+        shownotification: true,
+        message: "Select a assets",
+      });
+      setTimeout(() => {
+        setNoftification({ shownotification: false, message: "" });
+      }, 5000);
+    } else {
+      if (Array.isArray(assets)) {
+        const data = assets.map((asset) => {
+          return asset.value;
+        });
+        if (Array.isArray(selectedserviceItem)) {
+          let Items: any[] = selectedserviceItem.map((items) => {
+            return items.value;
+          });
+
+          const newContract: NewContract = {
+            id: contractID,
+            company: selectedCompany,
+            contractName: contractName,
+            ownerId: authReducer.userId.toString(),
+            typeOfHours: typeHours,
+            startDate: startDate ?? "".toString(),
+            endDate: endDate ?? "".toString(),
+            serviceItem: Items,
+            servicePackage: selectedServicePkg,
+            projectManager: selectedAgent,
+            remarks: remarks,
+            totalEntitlement: hours.toString(),
+            assets: data,
+            createdDate: new Date(),
+          };
+          if (newContract.id !== null && newContract.id !== "") {
+            formData.append("id", newContract.id);
+            if (files) {
+              if (files.length > 0) {
+                for (let i = 0; i < files.length; i++) {
+                  formData.append(files[i].name, files[i]);
+                }
+              }
+              const file = await axiosConfig.post(
+                "/api/v1/uploadFile",
+                formData,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                }
+              );
+              console.log("response", file);
+
+              if (file.data.message === "User Authentication faild") {
+                dispatch(unAuth());
+                setNoftification({
+                  shownotification: true,
+                  message: file.data.message,
+                });
+                setTimeout(() => {
+                  setNoftification({
+                    shownotification: false,
+                    message: "",
+                  });
+                }, 5000);
+              } else {
+              }
+            } else {
+              console.log("No files were selected");
+            }
+          }
+          const result = await dispatch(createContract(newContract));
+          if (result.payload.ok) {
+            formref.current!.reset();
+            setContractID("");
+            setContractName("");
+            setstartDate(null);
+            setendDate(null);
+            Items = [];
+            setTypeHours("Proactive");
+            setselectedserviceItem([]);
+            setlistOfServiceItem([]);
+            setserviceItem([]);
+
+            setAssets([]);
+            setHours(1);
+            setSelectedAgent(
+              listOfAgents[0].first_name + " " + listOfAgents[0].last_name
+            );
+            setRemarks("");
+            setstartDate("");
+            setendDate("");
+            updateContract();
+            handelCancel();
+          } else {
+            if (result.payload.message === "User Authentication faild") {
+              dispatch(unAuth());
+              setNoftification({
+                shownotification: true,
+                message: result.payload.response.data.message,
+              });
+              setTimeout(() => {
+                setNoftification({
+                  shownotification: false,
+                  message: "",
+                });
+              }, 5000);
+            } else {
+              setNoftification({
+                shownotification: true,
+                message: result.payload.response.data.message,
+              });
+              setTimeout(() => {
+                setNoftification({
+                  shownotification: false,
+                  message: "",
+                });
+              }, 5000);
+            }
+          }
         }
       }
-
-      const file = await axiosConfig.post("/api/v1/uploadFile", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log("file", file);
     }
-
-    // if (selectedCompany === "") {
-    //   setNoftification({
-    //     shownotification: true,
-    //     message: "Select a Company",
-    //   });
-
-    //   setTimeout(() => {
-    //     setNoftification({ shownotification: false, message: "" });
-    //   }, 5000);
-    // } else if (selectedServicePkg === "") {
-    //   setNoftification({
-    //     shownotification: true,
-    //     message: "Select a Service Package",
-    //   });
-
-    //   setTimeout(() => {
-    //     setNoftification({ shownotification: false, message: "" });
-    //   }, 5000);
-    // } else if (selectedserviceItem.length < 1) {
-    //   setNoftification({
-    //     shownotification: true,
-    //     message: "Select a Service item",
-    //   });
-
-    //   setTimeout(() => {
-    //     setNoftification({ shownotification: false, message: "" });
-    //   }, 5000);
-    // } else if (startDate === "" || endDate === "") {
-    //   setNoftification({
-    //     shownotification: true,
-    //     message: "Select a contract period",
-    //   });
-    //   setTimeout(() => {
-    //     setNoftification({ shownotification: false, message: "" });
-    //   }, 5000);
-    // } else if (!Array.isArray(assets) || assets.length < 1) {
-    //   setNoftification({
-    //     shownotification: true,
-    //     message: "Select a assets",
-    //   });
-    //   setTimeout(() => {
-    //     setNoftification({ shownotification: false, message: "" });
-    //   }, 5000);
-    // } else {
-    //   if (Array.isArray(assets)) {
-    //     const data = assets.map((asset) => {
-    //       return asset.value;
-    //     });
-    //     if (Array.isArray(selectedserviceItem)) {
-    //       let Items: any[] = selectedserviceItem.map((items) => {
-    //         return items.value;
-    //       });
-
-    //       const newContract: NewContract = {
-    //         id: contractID,
-    //         company: selectedCompany,
-    //         contractName: contractName,
-    //         ownerId: authReducer.userId.toString(),
-    //         typeOfHours: typeHours,
-    //         startDate: startDate ?? "".toString(),
-    //         endDate: endDate ?? "".toString(),
-    //         serviceItem: Items,
-    //         servicePackage: selectedServicePkg,
-    //         projectManager: selectedAgent,
-    //         remarks: remarks,
-    //         totalEntitlement: hours.toString(),
-    //         assets: data,
-    //         createdDate: new Date(),
-    //       };
-    //       const result = await dispatch(createContract(newContract));
-    //       if (result.payload.ok) {
-    //         formref.current!.reset();
-    //         setContractID("");
-    //         setContractName("");
-    //         setstartDate(null);
-    //         setendDate(null);
-    //         Items = [];
-    //         setTypeHours("Proactive");
-    //         setselectedserviceItem([]);
-    //         setlistOfServiceItem([]);
-    //         setserviceItem([]);
-    //         setAssets([]);
-    //         setHours(1);
-    //         setSelectedAgent(
-    //           listOfAgents[0].first_name + " " + listOfAgents[0].last_name
-    //         );
-    //         setRemarks("");
-    //         setstartDate("");
-    //         setendDate("");
-    //         updateContract();
-    //         handelCancel();
-    //       } else {
-    //         if (result.payload.message === "User Authentication faild") {
-    //           dispatch(unAuth());
-    //           setNoftification({
-    //             shownotification: true,
-    //             message: result.payload.response.data.message,
-    //           });
-    //           setTimeout(() => {
-    //             setNoftification({
-    //               shownotification: false,
-    //               message: "",
-    //             });
-    //           }, 5000);
-    //         } else {
-    //           setNoftification({
-    //             shownotification: true,
-    //             message: result.payload.response.data.message,
-    //           });
-    //           setTimeout(() => {
-    //             setNoftification({
-    //               shownotification: false,
-    //               message: "",
-    //             });
-    //           }, 5000);
-    //         }
-    //       }
-    //     }
-    //   }
-    // }
   }
   const dataType: any = "";
   return (
@@ -402,7 +429,7 @@ const ModalComponents: React.FC<Props> = ({
                 ]}
                 value={
                   startDate && endDate
-                    ? [moment(startDate), moment(endDate)]
+                    ? [moment(new Date(startDate)), moment(new Date(endDate))]
                     : null
                 }
                 allowClear={true}
@@ -472,6 +499,7 @@ const ModalComponents: React.FC<Props> = ({
                 name="List of Service Package"
                 id="List of Service Package"
                 onChange={async (e) => {
+                  console.log("e.target.value", e.target.value);
                   setselectedserviceItem([]);
                   const id = parseInt(e.target.value);
                   setMultiSelectOptions(
@@ -538,6 +566,7 @@ const ModalComponents: React.FC<Props> = ({
                 className="textInput"
                 type="number"
                 min={1}
+                value={hours}
                 required
                 onChange={(e) => {
                   setHours(parseInt(e.target.value));

@@ -41,7 +41,7 @@ const userAuthSlice = createSlice({
     closeFaild: (state, action) => {
       return { ...state, faild: false };
     },
-    unAuth: () => {
+    unAuth: (state) => {
       return { ...userInitialState };
     },
   },
