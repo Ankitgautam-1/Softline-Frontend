@@ -480,6 +480,137 @@ const ModalComponents: React.FC<Props> = ({
                 value={assets}
               />
             </div>
+            <div className="left_side">
+              <Typography className="label">Contract ID</Typography>
+              <Input
+                className="textInput"
+                aria-label="contract"
+                required
+                value={contractID}
+                onChange={(e) => setContractID(e.target.value)}
+              />
+
+              <Typography className="label">Company</Typography>
+
+              <select
+                name="select Company"
+                className="selectInput"
+                onChange={(e) => {
+                  const selectedCompany =
+                    listOfCompanies[e.target.options.selectedIndex - 1];
+
+                  setSelectedCompany(selectedCompany.name);
+
+                  setselectedCompanyID(parseInt(e.target.value));
+                }}
+              >
+                <option defaultValue={"default"} key="default">
+                  Select Companies
+                </option>
+                {listOfCompanies.map((department: Department) => {
+                  return (
+                    <option
+                      key={department.id}
+                      value={department.id}
+                      aria-label={department.name}
+                    >
+                      {department.name}
+                    </option>
+                  );
+                })}
+              </select>
+              <Typography className="label">Service Item</Typography>
+              <ReactSelect
+                isMulti
+                className="multiSelect"
+                options={listOfServiceItem
+                  .map((serviceItem) => {
+                    if (serviceItem.category_id === selectedID) {
+                      return {
+                        label: serviceItem.name,
+                        value: serviceItem.name,
+                      };
+                    }
+                  })
+                  .filter(function (el) {
+                    return el != null;
+                  })}
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
+                onChange={(selected) => {
+                  setselectedserviceItem(selected);
+                }}
+                value={selectedserviceItem}
+              />
+              <div className="label">
+                Contract Period{" "}
+                {contractPeriod && (
+                  <span className="period">{`( ${contractPeriod} ) `}</span>
+                )}
+              </div>
+
+              <RangePicker
+                className="datePicker"
+                format="DD/MM/YYYY"
+                ref={datePickerRef}
+                defaultPickerValue={[
+                  startDate !== "" ? dataType : startDate,
+                  endDate !== "" ? dataType : endDate,
+                ]}
+                value={
+                  startDate && endDate
+                    ? [moment(new Date(startDate)), moment(new Date(endDate))]
+                    : null
+                }
+                allowClear={true}
+                onChange={(e) => {
+                  const startDate = e?.[0]?.toDate().toString() ?? "";
+                  const endDate = e?.[1]?.toDate().toString() ?? "";
+                  setstartDate(startDate);
+                  setendDate(endDate);
+                  const datediff = dateDiff(moment(e?.[0]), moment(e?.[1]));
+                  const years =
+                    datediff.years > 0 ? `${datediff.years} year ` : "";
+                  const months =
+                    datediff.months > 0 ? `${datediff.months} month ` : "";
+                  const days =
+                    datediff.days > 0 ? `${datediff.days} days ` : "";
+
+                  setContractPeriod(years + months + days);
+                }}
+              />
+              <Typography className="label">Type of Hours</Typography>
+              <select
+                name="typeOfHours"
+                className="selectInput"
+                onChange={(e) => {
+                  setTypeHours(e.target.value.toString());
+                }}
+              >
+                <option value="Proactive" id="Proactive">
+                  Proactive
+                </option>
+                <option value="Reactive" id="Reactive">
+                  Reactive
+                </option>
+                <option value="Both" id="Both">
+                  Both
+                </option>
+              </select>
+              <Typography className="label">Service Asset</Typography>
+              <ReactSelect
+                isMulti
+                menuPlacement="top"
+                className="multiSelect"
+                options={asstesOptions}
+                closeMenuOnSelect={false}
+                hideSelectedOptions={false}
+                onChange={(selected) => {
+                  setAssets(selected);
+                }}
+                value={assets}
+              />
+            </div>
             <div className="right_side">
               <Typography className="label">Contract Name</Typography>
               <Input
@@ -586,11 +717,12 @@ const ModalComponents: React.FC<Props> = ({
               <Typography className="label">Files</Typography>
               <input
                 type={"file"}
-                multiple
+                accept=".zip,.rar"
                 minLength={1}
                 onChange={(e) => {
                   if (e.target.files) {
-                    setFiles(e.target.files);
+                    // console.log(e.target.files]);
+                    // setFiles(e.target.files);
                   }
                 }}
               />

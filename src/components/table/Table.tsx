@@ -69,10 +69,17 @@ export default function Table() {
     contract: null,
   });
   const downloadFiles = (folder: string) => {
-    axiosConfig.get(`api/v1/getFiles?folder=${folder}`).then((res) => {
-      console.log("file1", res);
-      download(res.data, `${folder}.tar`);
-    });
+    axiosConfig
+      .get(`api/v1/getFiles?folder=018`, {
+        headers: {
+          "Content-Type": "application/zip",
+        },
+      })
+      .then((res) => {
+        console.log("file1", res);
+
+        download(res.data, `018.zip`);
+      });
   };
   const [pageSize, setpageSize] = useState(10);
   //contract details
@@ -512,21 +519,22 @@ export default function Table() {
                 return (
                   params.value && (
                     <div>
-                      <Tooltip title="View" color={"#2e2d2d"}>
-                        <AiFillEye
+                      <Tooltip title="Download Files" color={"#2e2d2d"}>
+                        <button
                           style={{
                             cursor: "pointer",
                             borderRadius: 5,
                             border: "none",
-                            padding: "5px",
+                            padding: "5px 10px",
                             backgroundColor: "#06bb30",
                             color: "#f3f3f3",
                           }}
-                          size="30"
                           onClick={(e) => {
                             downloadFiles(params.row.id);
                           }}
-                        ></AiFillEye>
+                        >
+                          Download
+                        </button>
                       </Tooltip>{" "}
                     </div>
                   )
