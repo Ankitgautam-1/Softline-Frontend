@@ -16,7 +16,7 @@ const persistConfig = {
   key: "root",
   storage,
 };
-const RootReducer: any = combineReducers({
+const RootReducer = combineReducers({
   contractState: contractReducer,
   userReducer: userReducer,
 });
@@ -32,5 +32,5 @@ const store = configureStore({
 
 let persistor = persistStore(store);
 export default store;
-
+export type RootState = ReturnType<typeof RootReducer>;
 export { persistor };

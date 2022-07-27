@@ -13,7 +13,7 @@ import { DatePicker, Input, Space, Tooltip } from "antd";
 import moment, { Moment } from "moment";
 import { ServiceCategory } from "../../interfaces/ServicePackage";
 import { ServiceItem } from "../../interfaces/ServiceItem";
-import { Agent } from "../../interfaces/Agents";
+import { ProjectManager } from "../../interfaces/Agents";
 
 import { Department } from "../../interfaces/Companies";
 import ModalComponents from "../Modal/Modal";
@@ -503,8 +503,8 @@ export default function Table() {
             },
             {
               field: "projectManager",
-              headerName: "Manager",
-              width: 120,
+              headerName: "Project Manager",
+              width: 150,
             },
             {
               field: "remarks",

@@ -7,6 +7,7 @@ import App from "./App";
 import "./index.scss";
 import Home from "./pages/home/home";
 import LoginPage from "./pages/Login/Login";
+
 import NotFound from "./pages/NotFound/NotFound";
 import store, { persistor } from "./store/store";
 

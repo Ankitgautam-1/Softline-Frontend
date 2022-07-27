@@ -1,15 +1,8 @@
-import { Snackbar } from "@mui/material";
-import { AsyncThunkAction } from "@reduxjs/toolkit";
-import { Dispatch } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./App.scss";
 import LoginPage from "./pages/Login/Login";
 
-import {
-  closeFaild,
-  userSignIn,
-  userState,
-} from "./store/userAuth/userAuthSlice";
+import { userState } from "./store/userAuth/userAuthSlice";
 
 function App() {
   const dispatch: any = useDispatch();

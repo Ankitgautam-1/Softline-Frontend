@@ -14,7 +14,7 @@ import { DatePicker, Input, Space } from "antd";
 import moment, { Moment } from "moment";
 import { ServiceCategory } from "../../interfaces/ServicePackage";
 import { ServiceItem } from "../../interfaces/ServiceItem";
-import { Agent } from "../../interfaces/Agents";
+import { ProjectManager } from "../../interfaces/Agents";
 import axios from "axios";
 import { Button as AntdButton } from "antd";
 import { Department } from "../../interfaces/Companies";
@@ -78,7 +78,7 @@ const EditContract: React.FC<Props> = ({
   const [listOfServiceItem, setlistOfServiceItem] = useState<
     [] | ServiceItem[]
   >([]);
-  const [listOfAgents, setListOfAgents] = useState<[] | Agent[]>([]);
+  const [listOfAgents, setListOfAgents] = useState<[] | ProjectManager[]>([]);
   const [serviceItem, setserviceItem] = useState<string[]>([]);
   //contract details
   const [contractID, setContractID] = useState("");
@@ -650,7 +650,7 @@ const EditContract: React.FC<Props> = ({
                   setSelectedAgent(e.target.value);
                 }}
               >
-                {listOfAgents.map((agent: Agent) => {
+                {listOfAgents.map((agent: ProjectManager) => {
                   return (
                     <option
                       key={agent.id}
