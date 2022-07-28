@@ -59,7 +59,7 @@
           }
           .selectInput {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: $input_background_color;
@@ -71,7 +71,7 @@
             }
           }
           .textInput {
-            max-width: 400px;
+            max-width: 350px;
             min-width: 350px;
             width: 100%;
             border-radius: 8px;
@@ -95,7 +95,7 @@
 
             margin-bottom: 10px;
 
-            max-width: 400px;
+            max-width: 350px;
             .css-1s2u09g-control {
               border: 1px solid #dad9d8;
               background-color: $input_background_color;
@@ -133,7 +133,7 @@
           }
           .datePicker {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             border-radius: 5px;
             &:hover {
               border: 1px solid rgb(226, 226, 226);
@@ -143,9 +143,28 @@
               outline: none;
             }
             height: 45px;
-            padding: 6px 25px;
+            padding: 0px 10px;
             background-color: $input_background_color;
             font-family: "Montserrat", sans-serif;
+          }
+          .textArea {
+            width: 100%;
+            height: 30px;
+            border: 1px solid #d8d9da;
+            border-radius: 8px;
+            outline: none;
+            padding: 5px 10px;
+            background-color: #f6fafd;
+            font-family: "Montserrat", sans-serif;
+            font-weight: 500;
+            min-height: 40px;
+            max-height: 115px;
+            &:focus,
+            &:hover {
+              outline: none;
+              border: 1px solid #d8d9da;
+              box-shadow: none;
+            }
           }
         }
         .right_side {
@@ -159,7 +178,7 @@
             margin: 8px 0px;
           }
           .textInput {
-            max-width: 400px;
+            max-width: 350px;
             min-width: 350px;
             width: 100%;
             border-radius: 8px;
@@ -176,27 +195,10 @@
               box-shadow: none;
             }
           }
-          .textArea {
-            width: 100%;
-            border: 1px solid #d8d9da;
-            border-radius: 8px;
-            outline: none;
-            padding: 10px 15px;
-            background-color: #f6fafd;
-            font-family: "Montserrat", sans-serif;
-            font-weight: 500;
-            min-height: 44px;
-            max-height: 115px;
-            &:focus,
-            &:hover {
-              outline: none;
-              border: 1px solid #d8d9da;
-              box-shadow: none;
-            }
-          }
+
           .selectInput {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: $input_background_color;
@@ -209,7 +211,7 @@
           }
           .textArea {
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
             max-height: 120px;
             min-height: 44px;
             height: 44px;

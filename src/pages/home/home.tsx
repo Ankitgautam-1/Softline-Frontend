@@ -10,14 +10,17 @@ import "./home.scss";
 function Home() {
   const userState = useSelector((state: RootState) => state.userReducer);
   const Table = React.lazy(() => import("../../components/table/Table"));
-  const navigate = useNavigate();
-  if (!userState.auth) {
+  if (
+    !userState.auth ||
+    userState.auth === null ||
+    userState.auth === undefined
+  ) {
     return <Navigate to="/" replace={true} />;
   }
   if (userState.auth) {
     return (
       <div className="homepage_container">
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<span></span>}>
           <Table />
         </Suspense>
         {/* <Loading /> */}

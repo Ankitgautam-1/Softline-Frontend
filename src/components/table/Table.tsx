@@ -7,22 +7,17 @@ import Cookies from "js-cookie";
 import { Contract } from "../../interfaces/Contracts";
 import { useDispatch, useSelector } from "react-redux";
 import { unAuth, userState } from "../../store/userAuth/userAuthSlice";
-import { Box, Typography, Button, Popover } from "@mui/material";
+import { Button } from "@mui/material";
 
-import { DatePicker, Input, Space, Tooltip } from "antd";
-import moment, { Moment } from "moment";
-import { ServiceCategory } from "../../interfaces/ServicePackage";
-import { ServiceItem } from "../../interfaces/ServiceItem";
-import { ProjectManager } from "../../interfaces/Agents";
+import { Tooltip } from "antd";
+import moment from "moment";
 
-import { Department } from "../../interfaces/Companies";
 import ModalComponents from "../Modal/Modal";
-import { getContracts, resetContract } from "../../store/contracts";
-import { AiFillEye, AiFillDelete, AiOutlinePoweroff } from "react-icons/ai";
+import { resetContract } from "../../store/contracts";
+import { AiFillEye, AiFillDelete } from "react-icons/ai";
 import { FiEdit } from "react-icons/fi";
 import ViewContract from "../viewContract/viewContract";
-import { dateDiff } from "../../Utils/helperFunction";
-import { DeleteForever } from "@mui/icons-material";
+
 import download from "downloadjs";
 import axiosConfig from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
@@ -70,7 +65,7 @@ export default function Table() {
   });
   const downloadFiles = (folder: string) => {
     axiosConfig
-      .get(`api/v1/getFiles?folder=018`, {
+      .get(`api/v1/getFiles?folder=${folder}`, {
         headers: {
           "Content-Type": "application/zip",
         },
@@ -78,7 +73,7 @@ export default function Table() {
       .then((res) => {
         console.log("file1", res);
 
-        download(res.data, `018.zip`);
+        download(res.data, `${folder}.csv`);
       });
   };
   const [pageSize, setpageSize] = useState(10);
@@ -443,7 +438,7 @@ export default function Table() {
             },
             {
               field: "id",
-              headerName: "ID",
+              headerName: "Contract ID",
               width: 85,
               filterable: true,
             },
@@ -497,8 +492,8 @@ export default function Table() {
               width: 120,
             },
             {
-              field: "totalEntitlement",
-              headerName: "Total Entitlement",
+              field: "contractHours",
+              headerName: "Contract Hours",
               width: 120,
             },
             {

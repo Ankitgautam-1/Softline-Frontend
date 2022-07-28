@@ -5,30 +5,33 @@ import "./Modal.scss";
 import download from "downloadjs";
 import { useNavigate } from "react-router-dom";
 import axiosConfig from "../../Utils/axiosConfig";
-import { Contract, NewContract } from "../../interfaces/Contracts";
+import { NewContract } from "../../interfaces/Contracts";
+import { NewContract as NC } from "../../interfaces/Contract";
 import { useDispatch, useSelector } from "react-redux";
 import { unAuth, userState } from "../../store/userAuth/userAuthSlice";
-import { Box, Typography, Button, Snackbar, Alert } from "@mui/material";
+import { Typography, Snackbar, Alert } from "@mui/material";
 
 import { Modal, notification } from "antd";
-import { CloseOutlined } from "@mui/icons-material";
-import { DatePicker, Input, Space } from "antd";
-import moment, { Moment } from "moment";
+import { DatePicker, Input } from "antd";
+import moment from "moment";
 import { ServiceCategory } from "../../interfaces/ServicePackage";
 import { ServiceItem } from "../../interfaces/ServiceItem";
 import { ProjectManager } from "../../interfaces/Agents";
 import axios from "axios";
-import { Button as AntdButton } from "antd";
+
 import { Department } from "../../interfaces/Companies";
 import ReactSelect from "react-select";
-import { asstesOptions } from "../../Utils/constData";
+
 import { dateDiff } from "../../Utils/helperFunction";
 import { createContract } from "../../store/contracts";
-import { RangePickerProps } from "antd/lib/date-picker";
 import { AgentGroups } from "../../interfaces/AgentGroups";
 import { FirstAssigmentAgent } from "../../interfaces/FirstAssigmentAgent";
 import { ContractOwner } from "../../interfaces/ContractOwners";
 import { Location } from "../../interfaces/Location";
+import { SLA } from "../../interfaces/SLA";
+import { SupportTime } from "../../interfaces/SupportTime";
+import { Asset } from "../../interfaces/Assets";
+import { AssetsOption } from "../../interfaces/AssetsOption";
 type Props = {
   handelCancel: () => void;
   openModal: boolean;
@@ -50,7 +53,7 @@ const ModalComponents: React.FC<Props> = ({
   const formData = new FormData();
   const dispatch: any = useDispatch();
   const [selectedserviceItem, setselectedserviceItem] = useState<any>(null);
-  const [assets, setAssets] = useState<any>(null);
+
   const [selectedID, setSelectedID] = useState<Number>(0);
   const [selectedCompanyID, setselectedCompanyID] = useState<Number>(0);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -60,27 +63,40 @@ const ModalComponents: React.FC<Props> = ({
   const [listOfServicePackage, setListOfServicePackage] = useState<
     [] | ServiceCategory[]
   >([]);
+  const [listOfAssets, setListOfAssets] = useState<[] | Asset>([]);
+  const [assetsOptions, setAssetsOptions] = useState<[] | AssetsOption[]>([]);
   const [listOfContractOwner, setListOfContractOwner] = useState<
     [] | ContractOwner[]
   >([]);
-  const [selectedContractOwner, setSelectedContractOwner] = useState("");
+  const [selectedContractOwner, setSelectedContractOwner] = useState<{
+    id: number;
+    name: string;
+    email: string;
+  }>({ id: 0, name: "", email: "" });
   const [listOfServiceItem, setlistOfServiceItem] = useState<
     [] | ServiceItem[]
   >([]);
-  const [listOfProjectManger, setListOfProjectManager] = useState<
-    [] | ProjectManager[]
-  >([]);
+
   const [serviceItem, setserviceItem] = useState<string[]>([]);
   const [listOfCustomerUser, setListOfCustomerUser] = useState<
     [] | ContractOwner[]
   >([]);
   const [selectedCustomerUser, setSelectedCustomerUser] = useState("");
   //contract details
+  const [listOfSLA, setListOfSLA] = useState<[] | SLA[]>([]);
+  const [selectedSLA, setSelectedSLA] = useState("");
+  const [listOfSupportTime, setListOfSupportTime] = useState<
+    SupportTime[] | []
+  >([]);
+  const [selectedSupportTime, setSelectedSupportTime] = useState("");
   const [contractID, setContractID] = useState("");
   const [contractName, setContractName] = useState("");
   const [startDate, setstartDate] = useState<string | null>("");
   const [endDate, setendDate] = useState<string | null>("");
   const [typeHours, setTypeHours] = useState("Proactive");
+  const [listOfProjectManger, setListOfProjectManager] = useState<
+    [] | ProjectManager[]
+  >([]);
   const [selectedProjectManger, setSelectedProjectManager] = useState("");
   const [listOfAgentGroups, setListOfAgentGroups] = useState<
     [] | AgentGroups[]
@@ -90,7 +106,10 @@ const ModalComponents: React.FC<Props> = ({
   >({ name: "NA" });
   const [selectedAgentGroupIDs, setSelectedAgentGroupIDs] = useState<any[]>([]);
   const [firstAssignmentAgent, setFirstAssignmentAgent] = useState([]);
-  const [selectedAgentGroup, setSelectedAgentGroup] = useState("");
+  const [selectedAgentGroup, setSelectedAgentGroup] = useState<{
+    name: string;
+    id: string;
+  }>({ name: "", id: "" });
   const [selectedServicePkg, setSelectedServicePkg] = useState("");
   const [remarks, setRemarks] = useState("");
   const [netSuiteProjectID, setNetSuiteProjectID] = useState("");
@@ -99,11 +118,14 @@ const ModalComponents: React.FC<Props> = ({
   const [files, setFiles] = useState<FileList | null>(null);
   const [hours, setHours] = useState(0);
   const formref = useRef<HTMLFormElement>(null);
+  const [assetLabel, setAssetLabel] = useState<string[]>([]);
   const datePickerRef = useRef<any>();
+  const [selectedAssets, setSelectedAssets] = useState<any>(null);
   const [noftification, setNoftification] = useState<notifications>({
     message: "",
     shownotification: false,
   });
+
   const getLoctionByID = async (locationID: string) => {
     const locationResponse = await axiosConfig.get(
       `/api/v1/getLocationByID?locationID=${locationID}`
@@ -140,8 +162,17 @@ const ModalComponents: React.FC<Props> = ({
   const getCustomer = async () => {
     return axiosConfig.get("/api/v1/getCustomer");
   };
+  const getSLA = async () => {
+    return axiosConfig.get("/api/v1/getSLA");
+  };
   const getContractOwner = async () => {
     return axiosConfig.get("/api/v1/getContractOwner");
+  };
+  const getSupportTime = async () => {
+    return axiosConfig.get("/api/v1/getSupportTime");
+  };
+  const getAssets = async () => {
+    return axiosConfig.get("/api/v1/getAssets");
   };
   useEffect(() => {
     const getCompanies = async () => {
@@ -190,6 +221,9 @@ const ModalComponents: React.FC<Props> = ({
           getAgentGroups(),
           getContractOwner(),
           getCustomer(),
+          getSLA(),
+          getSupportTime(),
+          getAssets(),
         ])
         .then(async (res) => {
           if (res[0].data["ok"]) {
@@ -210,14 +244,23 @@ const ModalComponents: React.FC<Props> = ({
             setSelectedProjectManager(
               res[3].data["data"]["agents"][0]["first_name"] +
                 " " +
-                res[3].data["data"]["agents"][0]["last_name"]
+                res[3].data["data"]["agents"][0]["last_name"] +
+                " " +
+                `${res[3].data["data"]["agents"][0]["email"]}`
             );
+            // console.log(
+            //   "projectManager",
+
+            // );
           }
           if (res[4].data["ok"]) {
             console.log("res 4", res[4].data["agentsGroups"]);
 
             setListOfAgentGroups(res[4].data["agentsGroups"]);
-            setSelectedAgentGroup(res[4].data["agentsGroups"][0]["name"]);
+            setSelectedAgentGroup({
+              name: res[4].data["agentsGroups"][0]["name"],
+              id: res[4].data["agentsGroups"][0]["id"],
+            });
             setSelectedAgentGroupIDs(
               res[4].data["agentsGroups"][0]["agent_ids"]
             );
@@ -227,11 +270,15 @@ const ModalComponents: React.FC<Props> = ({
           }
           if (res[5].data["ok"]) {
             setListOfContractOwner(res[5].data["contractOwner"]);
-            setSelectedContractOwner(
-              res[5].data["contractOwner"][0].first_name +
+            setSelectedContractOwner({
+              id: res[5].data["contractOwner"][0].id,
+              name:
+                res[5].data["contractOwner"][0].first_name +
                 " " +
-                res[5].data["contractOwner"][0].last_name
-            );
+                res[5].data["contractOwner"][0].last_name,
+              email: res[5].data["contractOwner"][0].last_name.primary_email,
+            });
+
             await getLoctionByID(
               res[5].data["contractOwner"][0]["location_id"]
             );
@@ -244,6 +291,22 @@ const ModalComponents: React.FC<Props> = ({
                 " " +
                 res[6].data["customer"][0]["last_name"]
             );
+          }
+          if (res[7].data["ok"]) {
+            setListOfSLA(res[7].data["sla"]);
+            setSelectedSLA(res[7].data["sla"][0]["name"]);
+          }
+          if (res[8].data["ok"]) {
+            setListOfSupportTime(res[8].data["supportTime"]);
+            setSelectedSupportTime(res[8].data["supportTime"][0]["name"]);
+          }
+          if (res[9].data["ok"]) {
+            setListOfAssets(res[9].data["assets"]);
+            const option = res[9].data["assets"].map((asset: Asset) => {
+              return { value: asset.id, label: asset.name };
+            });
+            setAssetsOptions(option);
+            console.log("option", option);
           }
         })
         .catch((res) => {
@@ -271,7 +334,6 @@ const ModalComponents: React.FC<Props> = ({
         shownotification: true,
         message: "Select a Company",
       });
-
       setTimeout(() => {
         setNoftification({ shownotification: false, message: "" });
       }, 5000);
@@ -301,7 +363,7 @@ const ModalComponents: React.FC<Props> = ({
       setTimeout(() => {
         setNoftification({ shownotification: false, message: "" });
       }, 5000);
-    } else if (!Array.isArray(assets) || assets.length < 1) {
+    } else if (!Array.isArray(selectedAssets) || selectedAssets.length < 1) {
       setNoftification({
         shownotification: true,
         message: "Select a assets",
@@ -310,20 +372,26 @@ const ModalComponents: React.FC<Props> = ({
         setNoftification({ shownotification: false, message: "" });
       }, 5000);
     } else {
-      if (Array.isArray(assets)) {
-        const data = assets.map((asset) => {
-          return asset.value;
-        });
+      if (Array.isArray(selectedAssets)) {
         if (Array.isArray(selectedserviceItem)) {
           let Items: any[] = selectedserviceItem.map((items) => {
             return items.value;
           });
+          console.log("files", files);
 
-          const newContract: NewContract = {
+          const newContract: NC = {
             id: contractID,
             company: selectedCompany,
             contractName: contractName,
-            ownerId: authReducer.userId.toString(),
+            contractOwner: selectedContractOwner.id.toString(),
+            contractOwnerName: selectedContractOwner.name,
+            netSuiteProjectID: netSuiteProjectID,
+            firstAssigmentAgent: selectedFirstAssigmentAgent,
+            firstAssignmentGroup: selectedAgentGroup.name,
+            country: contractOwnerLocation.name,
+            sla: selectedSLA,
+            customerUser: selectedCustomerUser,
+            supportTime: selectedSupportTime,
             typeOfHours: typeHours,
             startDate: startDate ?? "".toString(),
             endDate: endDate ?? "".toString(),
@@ -331,73 +399,75 @@ const ModalComponents: React.FC<Props> = ({
             servicePackage: selectedServicePkg,
             projectManager: selectedProjectManger,
             remarks: remarks,
-            totalEntitlement: hours.toString(),
-            assets: data,
+            contractHours: hours,
+            assets: assetLabel,
             createdDate: new Date(),
             files: files ? (files.length > 0 ? true : false) : false,
           };
-          if (newContract.id !== null && newContract.id !== "") {
-            formData.append("id", newContract.id);
-            if (files) {
-              if (files.length > 0) {
-                for (let i = 0; i < files.length; i++) {
-                  formData.append(files[i].name, files[i]);
-                }
-              }
-              const file = await axiosConfig.post(
-                "/api/v1/uploadFile",
-                formData,
-                {
-                  headers: {
-                    "Content-Type": "multipart/form-data",
-                  },
-                }
-              );
-              console.log("response", file);
-
-              if (file.data.message === "User Authentication faild") {
-                dispatch(unAuth());
-                setNoftification({
-                  shownotification: true,
-                  message: file.data.message,
-                });
-                setTimeout(() => {
-                  setNoftification({
-                    shownotification: false,
-                    message: "",
-                  });
-                }, 5000);
-              } else {
-              }
-            } else {
-              console.log("No files were selected");
-            }
-          }
           const result = await dispatch(createContract(newContract));
           if (result.payload.ok) {
-            formref.current!.reset();
-            setContractID("");
-            setContractName("");
-            setstartDate(null);
-            setendDate(null);
-            Items = [];
-            setTypeHours("Proactive");
-            setselectedserviceItem([]);
+            // formref.current!.reset();
+            // setContractID("");
+            // setContractName("");
+            // setstartDate(null);
+            // setendDate(null);
+            // Items = [];
+            // setTypeHours("Proactive");
+            // setselectedserviceItem([]);
+            // setNetSuiteProjectID("");
+            // setserviceItem([]);
 
-            setserviceItem([]);
-
-            setAssets([]);
-            setHours(1);
-            setSelectedProjectManager(
-              listOfProjectManger[0].first_name +
-                " " +
-                listOfProjectManger[0].last_name
-            );
-            setRemarks("");
-            setstartDate("");
-            setendDate("");
+            // setSelectedAssets(null);
+            // setHours(1);
+            // setSelectedProjectManager(
+            //   listOfProjectManger[0].first_name +
+            //     " " +
+            //     listOfProjectManger[0].last_name
+            // );
+            // setRemarks("");
+            // setstartDate("");
+            // setendDate("");
             updateContract();
             handelCancel();
+            if (newContract.id !== null && newContract.id !== "") {
+              formData.append("id", newContract.id);
+
+              if (files) {
+                if (files.length > 0) {
+                  for (let i = 0; i < files.length; i++) {
+                    formData.append(files[i].name, files[i]);
+                  }
+                }
+                const file = await axiosConfig.post(
+                  `/api/v1/uploadFile?id=${newContract.id}`,
+                  formData,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                );
+                console.log("response", file);
+
+                if (file.data.message === "User Authentication faild") {
+                  dispatch(unAuth());
+                  setNoftification({
+                    shownotification: true,
+                    message: file.data.message,
+                  });
+                  setTimeout(() => {
+                    setNoftification({
+                      shownotification: false,
+                      message: "",
+                    });
+                  }, 5000);
+                } else if (file.data["ok"]) {
+                } else {
+                }
+              } else {
+                console.log("No files were selected");
+              }
+            }
           } else {
             if (result.payload.message === "User Authentication faild") {
               dispatch(unAuth());
@@ -424,6 +494,8 @@ const ModalComponents: React.FC<Props> = ({
               }, 5000);
             }
           }
+
+          console.log("new Contract ", newContract);
         }
       }
     }
@@ -434,7 +506,7 @@ const ModalComponents: React.FC<Props> = ({
       visible={openModal}
       onOk={handelCancel}
       footer={null}
-      style={{ top: 50 }}
+      style={{ top: 0 }}
       className="modal_container"
       onCancel={handelCancel}
       aria-labelledby="modal-modal-title"
@@ -577,15 +649,37 @@ const ModalComponents: React.FC<Props> = ({
               <Typography className="label">Service Asset</Typography>
               <ReactSelect
                 isMulti
-                menuPlacement="top"
+                menuPlacement="auto"
+                isSearchable={true}
                 className="multiSelect"
-                options={asstesOptions}
+                options={assetsOptions}
                 closeMenuOnSelect={false}
                 hideSelectedOptions={false}
                 onChange={(selected) => {
-                  setAssets(selected);
+                  console.log("selected", selected);
+                  if (selected.length > 0) {
+                    const label = selected.map((asset) => {
+                      return asset.label;
+                    });
+                    console.log(" asset.value", label);
+
+                    setAssetLabel(label);
+                  } else {
+                    setAssetLabel([]);
+                  }
+
+                  setSelectedAssets(selected);
                 }}
-                value={assets}
+                value={selectedAssets}
+              />
+
+              <Typography className="label">Remarks</Typography>
+              <textarea
+                className="textArea"
+                value={remarks}
+                onChange={(e) => {
+                  setRemarks(e.target.value);
+                }}
               />
             </div>
 
@@ -664,7 +758,11 @@ const ModalComponents: React.FC<Props> = ({
                       value={agent.first_name + " " + agent.last_name}
                       aria-label={agent.first_name + " " + agent.last_name}
                     >
-                      {agent.first_name + " " + agent.last_name}
+                      {agent.first_name +
+                        " " +
+                        agent.last_name +
+                        " " +
+                        `(${agent.email})`}
                     </option>
                   );
                 })}
@@ -673,49 +771,97 @@ const ModalComponents: React.FC<Props> = ({
               <Input
                 className="textInput"
                 type="number"
-                min={1}
+                min={0}
+                step={0.001}
                 value={hours}
                 required
+                placeholder="Contract Hours in hr"
                 onChange={(e) => {
-                  if (e.target.value) {
-                    setHours(parseInt(e.target.value));
-                  } else {
-                    setHours(0);
+                  try {
+                    setHours(parseFloat(e.target.value));
+                  } catch (e) {
+                    setHours(1);
                   }
                 }}
               />
-              <Typography className="label">Remarks</Typography>
-              <textarea
-                className="textArea"
-                value={remarks}
+
+              <Typography className="label">SLA</Typography>
+
+              <select
+                name="sla"
+                className="selectInput"
                 onChange={(e) => {
-                  setRemarks(e.target.value);
+                  setSelectedSLA(e.target.value);
+                  console.log("e", e.target.value);
                 }}
-              />
+              >
+                {listOfSLA.map((sla: SLA) => {
+                  return (
+                    <option key={sla.id.toString()} value={sla.name}>
+                      {sla.name}
+                    </option>
+                  );
+                })}
+              </select>
+              <Typography className="label">Support Time</Typography>
+
+              <select
+                name="supportTime"
+                className="selectInput"
+                onChange={(e) => {
+                  setSelectedSupportTime(e.target.value);
+                  console.log("e", e.target.value);
+                }}
+              >
+                {listOfSupportTime.map((supportTime: SupportTime) => {
+                  return (
+                    <option
+                      key={supportTime.id.toString()}
+                      value={supportTime.name}
+                    >
+                      {supportTime.name}
+                    </option>
+                  );
+                })}
+              </select>
               <Typography className="label">Files</Typography>
               <input
                 type={"file"}
-                accept=".zip,.rar"
                 minLength={1}
+                multiple={false}
                 onChange={(e) => {
+                  console.log("e.target.files", e.target.files);
+
                   if (e.target.files) {
-                    // console.log(e.target.files]);
-                    // setFiles(e.target.files);
+                    console.log(e.target.files);
+                    setFiles(e.target.files);
                   }
                 }}
               />
             </div>
             <div className="right_side">
+              <Typography className="label">Netsuite Project ID</Typography>
+              <input
+                className="textInput"
+                required
+                type={"text"}
+                value={netSuiteProjectID}
+                onChange={(e) => {
+                  setNetSuiteProjectID(e.target.value);
+                }}
+              />
               <Typography className="label">First assignment Group</Typography>
               {/* {selectedAgentGroup} */}
               <select
                 className="selectInput"
                 name="Select Agents Group"
                 id="selectedAgentGroup"
-                value={selectedAgentGroup}
+                value={selectedAgentGroup.name}
                 onChange={async (e) => {
                   setSelectedFirstAssigmentAgent("");
-                  setSelectedAgentGroup(e.target.value);
+                  console.log("e.traget.value");
+
+                  setSelectedAgentGroup({ name: e.target.value, id: "" });
                   const newselected = listOfAgentGroups.filter((agent) => {
                     return agent.name === e.target.value;
                   });
@@ -750,42 +896,51 @@ const ModalComponents: React.FC<Props> = ({
                 {firstAssignmentAgent.map((agent: FirstAssigmentAgent) => {
                   return (
                     <option key={agent.id}>
-                      {agent.first_name + " " + agent.last_name}
+                      {agent.first_name +
+                        " " +
+                        agent.last_name +
+                        " " +
+                        `(${agent.email})`}
                     </option>
                   );
                 })}
               </select>
-              <Typography className="label">Netsuite Project ID</Typography>
-              <input
-                className="textInput"
-                required
-                type={"text"}
-                value={netSuiteProjectID}
-                onChange={(e) => {
-                  setNetSuiteProjectID(e.target.value);
-                }}
-              />
+
               <Typography className="label">Contract Owner</Typography>
 
               <select
                 className="selectInput"
                 name="List of Service Package"
-                value={selectedContractOwner}
+                value={selectedContractOwner.name}
                 id="List of Service Package"
                 onChange={async (e) => {
-                  console.log("e.target.value", e.target.value);
-                  setSelectedContractOwner(e.target.value);
+                  const newId = e.target.value;
+                  const newSelectedContractOwner = listOfContractOwner.filter(
+                    (contractOwner: ContractOwner) => {
+                      return contractOwner.id === parseInt(newId);
+                    }
+                  );
+                  setSelectedContractOwner({
+                    name:
+                      newSelectedContractOwner[0].first_name +
+                      " " +
+                      newSelectedContractOwner[0].last_name,
+                    id: newSelectedContractOwner[0].id,
+                    email: newSelectedContractOwner[0].primary_email,
+                  });
+                  await getLoctionByID(
+                    newSelectedContractOwner[0].location_id.toString()
+                  );
                 }}
               >
                 {listOfContractOwner.map((contractOwner: ContractOwner) => {
                   return (
-                    <option
-                      key={contractOwner.id}
-                      value={
-                        contractOwner.first_name + " " + contractOwner.last_name
-                      }
-                    >
-                      {contractOwner.first_name + " " + contractOwner.last_name}
+                    <option key={contractOwner.id} value={contractOwner.id}>
+                      {contractOwner.first_name +
+                        " " +
+                        contractOwner.last_name +
+                        " " +
+                        `(${contractOwner.primary_email})`}
                     </option>
                   );
                 })}
@@ -810,7 +965,7 @@ const ModalComponents: React.FC<Props> = ({
                 {listOfCustomerUser.map((customer: ContractOwner) => {
                   return (
                     <option
-                      id={customer.id.toString()}
+                      key={customer.id.toString()}
                       value={customer.first_name + " " + customer.last_name}
                     >
                       {customer.first_name + " " + customer.last_name}
