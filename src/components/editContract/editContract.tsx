@@ -22,21 +22,30 @@ import ReactSelect from "react-select";
 import { asstesOptions } from "../../Utils/constData";
 import { dateDiff } from "../../Utils/helperFunction";
 import { createContract, editContract } from "../../store/contracts";
-const initialValues: Contract = {
+import { Contract as C } from "../../interfaces/Contract";
+const initialValues: C = {
   __v: 0,
+  contractHours: 1,
+  contractOwner: "",
+  contractOwnerName: "",
+  country: "",
+  customerUser: "",
+  firstAssigmentAgent: "",
+  firstAssignmentGroup: "",
+  netSuiteProjectID: "",
+  sla: "",
+  supportTime: "",
   _id: "",
   assets: [""],
   company: "",
   contractName: "",
   endDate: "",
   id: "",
-  ownerId: "",
   projectManager: "",
   remarks: "",
   serviceItem: [""],
   servicePackage: "",
   startDate: "",
-  totalEntitlement: 0,
   typeOfHours: "",
   createdDate: new Date(),
   files: false,
@@ -44,7 +53,7 @@ const initialValues: Contract = {
 type Props = {
   handelCancel: () => void;
   openModal: boolean;
-  contract: Contract | null;
+  contract: C | null;
   handelRefresh: () => void;
 };
 type notifications = {
@@ -62,8 +71,7 @@ const EditContract: React.FC<Props> = ({
   });
 
   const dispatch: any = useDispatch();
-  const [initialContract, setInitialContract] =
-    useState<Contract>(initialValues);
+  const [initialContract, setInitialContract] = useState<C>(initialValues);
   const [selectedserviceItem, setselectedserviceItem] = useState<any>(null);
   const [assets, setAssets] = useState<any>(null);
   const [selectedID, setSelectedID] = useState<number>(0);
@@ -89,7 +97,7 @@ const EditContract: React.FC<Props> = ({
   const [selectedAgent, setSelectedAgent] = useState("");
   const [selectedServicePkg, setSelectedServicePkg] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [hours, setHours] = useState(0);
+  const [contractHours, setContractHours] = useState(0);
   const [noftification, setNoftification] = useState<notifications>({
     message: "",
     shownotification: false,
@@ -105,7 +113,7 @@ const EditContract: React.FC<Props> = ({
 
       setendDate(contract.endDate);
       setSelectedAgent(contract.projectManager);
-      setHours(contract.totalEntitlement);
+      setContractHours(contract.contractHours);
       setTypeHours(contract.typeOfHours);
       const assetsData = contract.assets.map((asset: string) => {
         return { value: asset, label: asset };
@@ -118,7 +126,7 @@ const EditContract: React.FC<Props> = ({
       });
 
       setselectedserviceItem(serviceItem);
-      setHours(contract.totalEntitlement);
+      setContractHours(contract.contractHours);
       setSelectedCompany(contract.company);
       setRemarks(contract.remarks);
       setSelectedServicePkg(contract.servicePackage);
@@ -303,7 +311,7 @@ const EditContract: React.FC<Props> = ({
             const serviceItems = selectedserviceItem.map((item) => {
               return item.label;
             });
-            const updatedContract: Contract = {
+            const updatedContract: C = {
               __v: contract.__v,
               _id: contract._id,
               assets: asset,
@@ -311,14 +319,24 @@ const EditContract: React.FC<Props> = ({
               contractName: contractName,
               endDate: endDate,
               id: contractID,
-              ownerId: contract.ownerId,
+              contractHours:
+                contractHours > 0 ? contractHours : contract.contractHours,
+              typeOfHours: contract.typeOfHours,
+
               projectManager: selectedAgent,
               remarks: remarks,
               serviceItem: serviceItems,
               servicePackage: selectedServicePkg,
               startDate: startDate,
-              totalEntitlement: hours,
-              typeOfHours: typeHours,
+              contractOwner: contract.contractOwner,
+              contractOwnerName: contract.contractOwnerName,
+              country: contract.country,
+              customerUser: contract.customerUser,
+              firstAssigmentAgent: contract.firstAssignmentGroup,
+              firstAssignmentGroup: contract.firstAssignmentGroup,
+              netSuiteProjectID: contract.netSuiteProjectID,
+              sla: contract.sla,
+              supportTime: contract.supportTime,
               createdDate: contract.createdDate,
               files: contract.files,
             };
@@ -668,9 +686,9 @@ const EditContract: React.FC<Props> = ({
                 type="number"
                 min={1}
                 required
-                value={hours}
+                value={contractHours}
                 onChange={(e) => {
-                  setHours(parseInt(e.target.value));
+                  setContractHours(parseInt(e.target.value));
                 }}
               />
               <Typography className="label">Remarks</Typography>

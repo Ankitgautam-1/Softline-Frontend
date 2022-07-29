@@ -4,7 +4,8 @@ import "./Table.scss";
 import "antd/dist/antd.css";
 
 import Cookies from "js-cookie";
-import { Contract } from "../../interfaces/Contracts";
+
+import { Contract as C } from "../../interfaces/Contract";
 import { useDispatch, useSelector } from "react-redux";
 import { unAuth, userState } from "../../store/userAuth/userAuthSlice";
 import { Button } from "@mui/material";
@@ -23,15 +24,15 @@ import axiosConfig from "../../Utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 
 interface ViewContractProps {
-  contract: Contract | null;
+  contract: C | null;
   openModal: boolean;
 }
 interface EditContractProps {
-  contract: Contract | null;
+  contract: C | null;
   openModal: boolean;
 }
 interface DataTableProps {
-  listOfContract: Contract[];
+  listOfContract: C[];
   totalPages: number;
   currentPage: number;
   isLoading: boolean;
@@ -51,7 +52,7 @@ export default function Table() {
   const authReducer = useSelector((state: { userReducer: userState }) => {
     return state.userReducer;
   });
-  const contractState = useSelector((state: { contractState: Contract[] }) => {
+  const contractState = useSelector((state: { contractState: C[] }) => {
     return state.contractState;
   });
   const dispatch: any = useDispatch();
@@ -165,7 +166,7 @@ export default function Table() {
     const response = await axiosConfig.get(url);
     const resultData = await response.data;
     if (resultData.contract.length > 0) {
-      const newList = resultData.contract.map((item: Contract) => {
+      const newList = resultData.contract.map((item: C) => {
         const currentDate = moment();
         const startDate = moment(item.startDate);
 
@@ -213,7 +214,7 @@ export default function Table() {
     }
   }, []);
   console.log("pageState", pageState);
-  const handleOpenViewContract = (contract: Contract) => {
+  const handleOpenViewContract = (contract: C) => {
     setViewContract({ contract: contract, openModal: true });
   };
   const handleCloseViewContract = () => {
@@ -225,7 +226,7 @@ export default function Table() {
   const handleOpen = () => {
     setOpenModel(true);
   };
-  const handleOpenEditContract = (contract: Contract) => {
+  const handleOpenEditContract = (contract: C) => {
     seteditContract({ contract: contract, openModal: true });
   };
   const handleCloseEditContract = () => {
@@ -448,6 +449,23 @@ export default function Table() {
               width: 150,
               filterable: true,
             },
+            {
+              field: "netSuiteProjectID",
+              headerName: "Net Suite ProjectID",
+              width: 150,
+            },
+
+            {
+              field: "firstAssigmentAgent",
+              headerName: "First Assigment Agent",
+              width: 200,
+            },
+            {
+              field: "firstAssignmentGroup",
+              headerName: "First Assignment Group",
+              width: 200,
+            },
+
             {
               field: "company",
               headerName: "Company",

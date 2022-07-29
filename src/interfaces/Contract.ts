@@ -23,7 +23,7 @@ export interface Contract {
   country: string;
   assets: string[];
   supportTime: string;
-  custometUser: string;
+  customerUser: string;
   remarks: string;
   createdDate: Date;
   files: boolean;

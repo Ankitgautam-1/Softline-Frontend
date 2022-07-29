@@ -116,7 +116,7 @@ const ModalComponents: React.FC<Props> = ({
   const [selectedFirstAssigmentAgent, setSelectedFirstAssigmentAgent] =
     useState("");
   const [files, setFiles] = useState<FileList | null>(null);
-  const [hours, setHours] = useState(0);
+  const [contractHours, setcontractHours] = useState(0);
   const formref = useRef<HTMLFormElement>(null);
   const [assetLabel, setAssetLabel] = useState<string[]>([]);
   const datePickerRef = useRef<any>();
@@ -228,11 +228,39 @@ const ModalComponents: React.FC<Props> = ({
         .then(async (res) => {
           if (res[0].data["ok"]) {
             setListOfCompanies(res[0].data["companies"]["departments"]);
+            setSelectedCompany(
+              res[0].data["companies"]["departments"][0]["name"]
+            );
           }
           if (res[1].data["ok"]) {
             setListOfServicePackage(
               res[1].data["servicePackage"]["service_categories"]
             );
+
+            const id =
+              res[1].data["servicePackage"]["service_categories"][0]["id"];
+
+            setMultiSelectOptions(
+              res[2].data["servicePackage"]["service_items"]
+                .map((serviceItem: ServiceItem) => {
+                  if (serviceItem.category_id === id) {
+                    return {
+                      label: serviceItem.name,
+                      value: serviceItem.name,
+                    };
+                  }
+                })
+                .filter(function (el: any) {
+                  return el != null;
+                })
+            );
+
+            setserviceItem([]);
+            const selectedPkg =
+              res[2].data["servicePackage"]["service_items"][0];
+
+            setSelectedServicePkg(selectedPkg.name);
+            setSelectedID(id);
           }
           if (res[2].data["ok"]) {
             setlistOfServiceItem(
@@ -303,7 +331,10 @@ const ModalComponents: React.FC<Props> = ({
           if (res[9].data["ok"]) {
             setListOfAssets(res[9].data["assets"]);
             const option = res[9].data["assets"].map((asset: Asset) => {
-              return { value: asset.id, label: asset.name };
+              return {
+                value: asset.id,
+                label: asset.name + " " + `(${asset.id})`,
+              };
             });
             setAssetsOptions(option);
             console.log("option", option);
@@ -399,34 +430,59 @@ const ModalComponents: React.FC<Props> = ({
             servicePackage: selectedServicePkg,
             projectManager: selectedProjectManger,
             remarks: remarks,
-            contractHours: hours,
+            contractHours: contractHours,
             assets: assetLabel,
             createdDate: new Date(),
             files: files ? (files.length > 0 ? true : false) : false,
           };
-          const result = await dispatch(createContract(newContract));
-          if (result.payload.ok) {
-            // formref.current!.reset();
-            // setContractID("");
-            // setContractName("");
-            // setstartDate(null);
-            // setendDate(null);
-            // Items = [];
-            // setTypeHours("Proactive");
-            // setselectedserviceItem([]);
-            // setNetSuiteProjectID("");
-            // setserviceItem([]);
+          //const result = await dispatch(createContract(newContract));
+          if (true) {
+            const id = listOfServicePackage[0]["id"];
+            console.log("Id", id);
 
-            // setSelectedAssets(null);
-            // setHours(1);
-            // setSelectedProjectManager(
-            //   listOfProjectManger[0].first_name +
-            //     " " +
-            //     listOfProjectManger[0].last_name
-            // );
-            // setRemarks("");
-            // setstartDate("");
-            // setendDate("");
+            setMultiSelectOptions(
+              listOfServiceItem
+                .map((serviceItem: ServiceItem) => {
+                  if (serviceItem.category_id === id) {
+                    return {
+                      label: serviceItem.name,
+                      value: serviceItem.name,
+                    };
+                  }
+                })
+                .filter(function (el: any) {
+                  return el != null;
+                })
+            );
+            setserviceItem([]);
+            const selectedPkg = listOfServicePackage[0];
+
+            setSelectedServicePkg(selectedPkg.name);
+            setSelectedID(id);
+            formref.current!.reset();
+            setContractID("");
+            setContractName("");
+            setstartDate(null);
+            setendDate(null);
+
+            setTypeHours("Proactive");
+            setselectedserviceItem([]);
+            setNetSuiteProjectID("");
+            setserviceItem([]);
+
+            setSelectedAssets(null);
+            setcontractHours(1);
+            setSelectedProjectManager(
+              listOfProjectManger[0].first_name +
+                " " +
+                listOfProjectManger[0].last_name
+            );
+            setRemarks("");
+            setstartDate("");
+            setendDate("");
+
+            Items = [];
+
             updateContract();
             handelCancel();
             if (newContract.id !== null && newContract.id !== "") {
@@ -468,32 +524,33 @@ const ModalComponents: React.FC<Props> = ({
                 console.log("No files were selected");
               }
             }
-          } else {
-            if (result.payload.message === "User Authentication faild") {
-              dispatch(unAuth());
-              setNoftification({
-                shownotification: true,
-                message: result.payload.response.data.message,
-              });
-              setTimeout(() => {
-                setNoftification({
-                  shownotification: false,
-                  message: "",
-                });
-              }, 5000);
-            } else {
-              setNoftification({
-                shownotification: true,
-                message: result.payload.response.data.message,
-              });
-              setTimeout(() => {
-                setNoftification({
-                  shownotification: false,
-                  message: "",
-                });
-              }, 5000);
-            }
           }
+          //  else {
+          //   if (result.payload.message === "User Authentication faild") {
+          //     dispatch(unAuth());
+          //     setNoftification({
+          //       shownotification: true,
+          //       message: result.payload.response.data.message,
+          //     });
+          //     setTimeout(() => {
+          //       setNoftification({
+          //         shownotification: false,
+          //         message: "",
+          //       });
+          //     }, 5000);
+          //   } else {
+          //     setNoftification({
+          //       shownotification: true,
+          //       message: result.payload.response.data.message,
+          //     });
+          //     setTimeout(() => {
+          //       setNoftification({
+          //         shownotification: false,
+          //         message: "",
+          //       });
+          //     }, 5000);
+          //   }
+          // }
 
           console.log("new Contract ", newContract);
         }
@@ -546,16 +603,13 @@ const ModalComponents: React.FC<Props> = ({
                 className="selectInput"
                 onChange={(e) => {
                   const selectedCompany =
-                    listOfCompanies[e.target.options.selectedIndex - 1];
+                    listOfCompanies[e.target.options.selectedIndex];
 
                   setSelectedCompany(selectedCompany.name);
 
                   setselectedCompanyID(parseInt(e.target.value));
                 }}
               >
-                <option defaultValue={"default"} key="default">
-                  Select Companies
-                </option>
                 {listOfCompanies.map((department: Department) => {
                   return (
                     <option
@@ -720,13 +774,12 @@ const ModalComponents: React.FC<Props> = ({
                   );
                   setserviceItem([]);
                   const selectedPkg =
-                    listOfServicePackage[e.target.options.selectedIndex - 1];
+                    listOfServicePackage[e.target.options.selectedIndex];
 
                   setSelectedServicePkg(selectedPkg.name);
                   setSelectedID(id);
                 }}
               >
-                <option defaultValue={"default"}>Select Service Package</option>
                 {listOfServicePackage.map(
                   (ServiceCategory: ServiceCategory) => {
                     return (
@@ -768,19 +821,20 @@ const ModalComponents: React.FC<Props> = ({
                 })}
               </select>
               <Typography className="label">Contract Hours</Typography>
-              <Input
+              <input
                 className="textInput"
                 type="number"
-                min={0}
-                step={0.001}
-                value={hours}
+                min={1}
+                step={"any"}
+                value={contractHours}
                 required
                 placeholder="Contract Hours in hr"
                 onChange={(e) => {
                   try {
-                    setHours(parseFloat(e.target.value));
+                    // console.log("data:", e.target.value);
+                    setcontractHours(parseFloat(e.target.value));
                   } catch (e) {
-                    setHours(1);
+                    console.log("e", e);
                   }
                 }}
               />
