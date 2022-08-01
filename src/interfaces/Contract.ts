@@ -29,6 +29,8 @@ export interface Contract {
   files: boolean;
   __v: number;
   _id: string;
+  consumedHours?: 0;
+  remainingHours?: 0;
 }
 
 export interface NewContract {

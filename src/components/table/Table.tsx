@@ -164,6 +164,8 @@ export default function Table() {
       url = `/api/v1/paginated?page=${pgN}&limit=${pageSize}`;
     }
     const response = await axiosConfig.get(url);
+    console.log("response", response.data);
+
     const resultData = await response.data;
     if (resultData.contract.length > 0) {
       const newList = resultData.contract.map((item: C) => {
