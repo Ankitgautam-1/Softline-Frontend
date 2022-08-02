@@ -268,13 +268,13 @@ const ModalComponents: React.FC<Props> = ({
             );
           }
           if (res[3].data["ok"]) {
-            setListOfProjectManager(res[3].data["data"]["agents"]);
+            setListOfProjectManager(res[3].data["projectManger"]);
             setSelectedProjectManager(
-              res[3].data["data"]["agents"][0]["first_name"] +
+              res[3].data["projectManger"][0]["first_name"] +
                 " " +
-                res[3].data["data"]["agents"][0]["last_name"] +
+                res[3].data["projectManger"][0]["last_name"] +
                 " " +
-                `${res[3].data["data"]["agents"][0]["email"]}`
+                `${res[3].data["projectManger"][0]["email"]}`
             );
             // console.log(
             //   "projectManager",
@@ -415,7 +415,10 @@ const ModalComponents: React.FC<Props> = ({
             company: selectedCompany,
             contractName: contractName,
             contractOwner: selectedContractOwner.id.toString(),
-            contractOwnerName: selectedContractOwner.name,
+            contractOwnerName:
+              selectedContractOwner.name +
+              " " +
+              `(${selectedContractOwner.email})`,
             netSuiteProjectID: netSuiteProjectID,
             firstAssigmentAgent: selectedFirstAssigmentAgent,
             firstAssignmentGroup: selectedAgentGroup.name,

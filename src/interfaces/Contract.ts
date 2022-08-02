@@ -15,7 +15,7 @@ export interface Contract {
   netSuiteProjectID: string;
   startDate: string;
   endDate: string;
-  contractHours: number;
+  contractHours: number | string;
   contractOwner: string;
   contractOwnerName: string;
   typeOfHours: string;

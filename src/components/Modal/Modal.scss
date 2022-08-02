@@ -59,7 +59,8 @@
           }
           .selectInput {
             width: 100%;
-            max-width: 350px;
+            max-width: 330px;
+            min-width: 300px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: $input_background_color;
@@ -71,8 +72,8 @@
             }
           }
           .textInput {
-            max-width: 350px;
-            min-width: 350px;
+            max-width: 330px;
+            min-width: 300px;
             width: 100%;
             border-radius: 8px;
             outline: none;
@@ -89,13 +90,13 @@
           }
 
           .multiSelect {
-            min-width: 350px;
+            min-width: 300px;
             width: 100%;
             font-weight: 500;
 
             margin-bottom: 10px;
 
-            max-width: 350px;
+            max-width: 330px;
             .css-1s2u09g-control {
               border: 1px solid #dad9d8;
               background-color: $input_background_color;
@@ -133,14 +134,17 @@
           }
           .datePicker {
             width: 100%;
-            max-width: 350px;
+            max-width: 330px;
             border-radius: 5px;
-            &:hover {
-              border: 1px solid rgb(226, 226, 226);
-            }
+            border: 1px solid $input_border_color;
+
             &::selection {
               border: none;
               outline: none;
+            }
+            &:hover {
+              border: 1px solid $input_border_color;
+              box-shadow: none;
             }
             height: 45px;
             padding: 0px 10px;
@@ -178,8 +182,8 @@
             margin: 8px 0px;
           }
           .textInput {
-            max-width: 350px;
-            min-width: 350px;
+            max-width: 330px;
+            min-width: 300px;
             width: 100%;
             border-radius: 8px;
             outline: none;
@@ -198,7 +202,7 @@
 
           .selectInput {
             width: 100%;
-            max-width: 350px;
+            max-width: 330px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: $input_background_color;
@@ -211,7 +215,7 @@
           }
           .textArea {
             width: 100%;
-            max-width: 350px;
+            max-width: 330px;
             max-height: 120px;
             min-height: 44px;
             height: 44px;

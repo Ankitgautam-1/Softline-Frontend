@@ -1,7 +1,7 @@
 import { Input, Typography } from "@mui/material";
 import { DatePicker, Modal } from "antd";
 import moment from "moment";
-import React from "react";
+import React, { useEffect } from "react";
 import ReactSelect from "react-select";
 import { Contract as C } from "../../interfaces/Contract";
 import { asstesOptions } from "../../Utils/constData";
@@ -18,6 +18,11 @@ const ViewContract: React.FC<Props> = ({
   openModal,
   contract,
 }) => {
+  useEffect(() => {
+    if (contract) {
+    }
+  }, [contract]);
+
   console.log("contract", contract?.contractOwnerName);
   return (
     <Modal

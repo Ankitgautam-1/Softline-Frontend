@@ -1,5 +1,3 @@
-@import "../../Utils/defaultsStyles.scss";
-
 .modal_container {
   min-width: fit-content;
   display: flex;
@@ -27,6 +25,13 @@
         font-family: "Montserrat", sans-serif;
         .ant-picker {
           height: 40px;
+          &:focus,
+          &:hover {
+            border: none;
+            outline: none;
+          }
+          border: none;
+          outline: none;
         }
         flex: 1;
         .label {
@@ -38,19 +43,19 @@
         }
         .selectInput {
           width: 100%;
-          max-width: 330px;
+          max-width: 400px;
           padding: 10px 15px;
           border-radius: 8px;
           background-color: #f6fafd;
           font-family: "Montserrat", sans-serif;
           font-weight: 500;
-          border: 1px $input_border_color solid;
+          border: 1px rgb(200, 200, 200) solid;
           &:focus {
             outline: none;
           }
         }
         .textInput {
-          max-width: 330px;
+          max-width: 400px;
           min-width: 300px;
           width: 100%;
           border-radius: 8px;
@@ -59,11 +64,11 @@
           background-color: #f6fafd;
           font-family: "Montserrat", sans-serif;
           font-weight: 500;
-          border: 1px rgb(200, 200, 200) solid;
+          border: none;
           &:focus,
           &:hover {
             outline: none;
-            border: 1px rgb(200, 200, 200) solid;
+            border: none;
             box-shadow: none;
           }
         }
@@ -74,7 +79,7 @@
 
           margin-bottom: 10px;
 
-          max-width: 330px;
+          max-width: 400px;
           .css-1insrsq-control {
             min-height: 40px;
             background-color: #f6fafd;
@@ -88,14 +93,14 @@
           .css-1pahdxg-control {
             background-color: #f6fafd;
             outline: none;
-            border: 1px rgb(200, 200, 200) solid;
+            border: none;
             border-radius: 8px;
 
             border: 1px solid #d8d9da;
             &:focus,
             &:focus-within,
             &:hover {
-              border: 1px rgb(200, 200, 200) solid;
+              border: 1px solid #d8d9da;
               box-shadow: none;
             }
           }
@@ -117,9 +122,9 @@
         }
         .datePicker {
           width: 100%;
-          max-width: 330px;
+          max-width: 400px;
           border-radius: 5px;
-          border: 1px rgb(200, 200, 200) solid;
+
           &::selection {
             border: none;
             outline: none;
@@ -141,7 +146,7 @@
           margin: 8px 0px;
         }
         .textInput {
-          max-width: 330px;
+          max-width: 400px;
           min-width: 300px;
           width: 100%;
           border-radius: 8px;
@@ -150,17 +155,17 @@
           background-color: #f6fafd;
           font-family: "Montserrat", sans-serif;
           font-weight: 500;
-          border: 1px rgb(200, 200, 200) solid;
+          border: none;
           &:focus,
           &:hover {
             outline: none;
-            border: 1px rgb(200, 200, 200) solid;
+            border: none;
             box-shadow: none;
           }
         }
         .selectInput {
           width: 100%;
-          max-width: 330px;
+          max-width: 400px;
           padding: 10px 15px;
           border-radius: 8px;
           background-color: #f6fafd;

@@ -4,6 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   .contract_container {
     border-radius: 20px;
     padding: 0px 20px;
@@ -55,7 +56,7 @@
           }
           .selectInput {
             width: 100%;
-            max-width: 400px;
+            max-width: 330px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: #f6fafd;
@@ -67,8 +68,8 @@
             }
           }
           .textInput {
-            max-width: 400px;
-            min-width: 350px;
+            max-width: 330px;
+
             width: 100%;
             border-radius: 8px;
             outline: none;
@@ -90,7 +91,7 @@
 
             margin-bottom: 10px;
 
-            max-width: 400px;
+            max-width: 330px;
             .css-1s2u09g-control {
               border: 1px solid #dad9d8;
               background-color: #f6fafd;
@@ -128,10 +129,13 @@
           }
           .datePicker {
             width: 100%;
-            max-width: 400px;
+            max-width: 330px;
             border-radius: 5px;
+            border: 1px solid $input_border_color;
+
             &:hover {
-              border: 1px solid rgb(226, 226, 226);
+              border: 1px solid $input_border_color;
+              box-shadow: none;
             }
             &::selection {
               border: none;
@@ -154,8 +158,8 @@
             margin: 8px 0px;
           }
           .textInput {
-            max-width: 400px;
-            min-width: 350px;
+            max-width: 330px;
+            min-width: 300px;
             width: 100%;
             border-radius: 8px;
             outline: none;
@@ -173,7 +177,7 @@
           }
           .selectInput {
             width: 100%;
-            max-width: 400px;
+            max-width: 330px;
             padding: 10px 15px;
             border-radius: 8px;
             background-color: #f6fafd;
